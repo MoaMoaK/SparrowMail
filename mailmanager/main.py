@@ -2,6 +2,7 @@
 
 # Import PyPI packages
 import os
+import sys
 import sqlite3
 import time
 from random import randint
@@ -69,7 +70,7 @@ def saltpassword (password, salt) :
 def log (message, level='INFO') :
     """Print a log formated message"""
 
-    print(time.ctime() + ' ['+level+'] ' + message)
+    print(time.ctime() + ' ['+level+'] ' + str(message))
     return None
 
 
@@ -133,10 +134,10 @@ def add_alias(mailbox_id):
             try :
                 # Is it a valid email ?
                 v = validate_email(request.form['alias'])
-                alias = v['email']
+                new_alias = v['email']
                 # If no exceptions so far, let's update the db
                 db.execute('INSERT INTO aliases (address, target_id) VALUES (?, ?)',
-                        [alias, mailbox_id])
+                        [new_alias, mailbox_id])
                 db.commit()
             except EmailNotValidError as e :
                 # Only exception from validate_email (= email not valid )
@@ -148,10 +149,11 @@ def add_alias(mailbox_id):
                 log (sys.exc_info())
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
-                log ('Alias '+alias+' added to '+str(mailbox_id))
-                flash (alias+' has been successfully added as an alias')
+                log ('Alias '+new_alias+' added to '+str(mailbox_id))
+                flash (new_alias+' has been successfully added as an alias')
                 return redirect(url_for('welcome'))
 
+    # If GET method used or
     # In case of something wrong, go back to the form with the error displayed
     return render_template('addalias.html', error=error, mailbox_address=mailbox['address'])
 
@@ -160,7 +162,46 @@ def add_alias(mailbox_id):
 
 @app.route('/addmailbox', methods=['GET', 'POST'])
 def add_mailbox():
-    return welcome()
+    """The page to add 1 mailbox"""
+    
+    if not session.get('user_id') :
+        return redirect(url_for('login'))
+
+    # Possible error
+    error = None
+
+    # Has the user filled the form ?
+    if request.method == 'POST' :
+        # Is the field not empty
+        if not request.form['mailbox'] :
+            error = 'The mailbox field can\'t be empty'
+        else :
+            try :
+                # Is it a valid email ?
+                v = validate_email(request.form['mailbox'])
+                new_mailbox = v['email']
+                # If no exceptions so far, let's update the db
+                db = get_db()
+                db.execute('INSERT INTO mailboxes (address) VALUES (?)',
+                        [new_mailbox])
+                db.commit()
+            except EmailNotValidError as e :
+                # Only exception from validate_email (= email not valid )
+                error = request.form['mailbox']+' is not a valid email'
+                log (sys.exc_info())
+            except :
+                # Other exceptions ( about database request )
+                error = 'Something went wrong while updating the database'
+                log (sys.exc_info())
+            else :
+                # Everyting is ok, notify the user about success and go back to welcome page
+                log ('Mailbox '+new_mailbox+' added')
+                flash (new_mailbox+' has been successfully added as a mailbox')
+                return redirect(url_for('welcome'))
+    
+    # If GET method used or
+    # In case of something wrong, go back to the form with the error displayed
+    return render_template('addmailbox.html', error=error)
 
 
 
