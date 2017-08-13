@@ -1,2 +1,3 @@
 venv/
 mailmanager/main.pyc
+mailmanager/__init__.pyc
