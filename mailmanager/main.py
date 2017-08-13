@@ -53,7 +53,7 @@ def initdb_command():
 
 @app.route('/', methods=['GET'])
 def welcome():
-    if not session['logged_in'] :
+    if not session.get('logged_in') :
         return redirect( url_for( 'login' ) )
     else :
         return render_template('welcome.html')
@@ -76,5 +76,11 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('show_entries'))
+            return redirect(url_for('welcome'))
     return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('login'))
