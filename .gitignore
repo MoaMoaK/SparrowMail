@@ -3,3 +3,4 @@ mailmanager/main.pyc
 mailmanager/__init__.pyc
 save_nogit/
 mailmanager/mailmanager.db
+mailmanager.egg-info/

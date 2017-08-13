@@ -1,9 +1,0 @@
-MANIFEST.in
-mailmanager/__init__.py
-mailmanager/main.py
-mailmanager/schema.sql
-mailmanager.egg-info/PKG-INFO
-mailmanager.egg-info/SOURCES.txt
-mailmanager.egg-info/dependency_links.txt
-mailmanager.egg-info/requires.txt
-mailmanager.egg-info/top_level.txt
