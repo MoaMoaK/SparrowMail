@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+
 # all the imports
 import os
 import sqlite3
+import time
+from hashlib import sha256
 from flask import Flask, request, session, g, redirect, url_for, abort, \
              render_template, flash
 
@@ -51,8 +55,25 @@ def initdb_command():
 
 
 
+def saltpassword (password, salt) :
+    """Return a salted password with the algo sha256(passwd+salt)"""
+
+    saltedpassword = password + str(salt)
+    return sha256(saltedpassword.encode('utf-8')).hexdigest()
+
+
+def log (message, level='INFO') :
+    """Print a log formated message"""
+
+    print(time.ctime() + ' ['+level+'] ' + message)
+    return None
+
+
+
 @app.route('/', methods=['GET'])
 def welcome():
+    """The default web page presenting the different mail infos"""
+
     if not session.get('logged_in') :
         return redirect( url_for( 'login' ) )
     else :
@@ -65,19 +86,42 @@ def welcome():
 
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
+    """The login page (standard username + passwd connection)"""
+
     error = None
+
+    # Has the user used POST method (= try to login )
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('welcome'))
+        # Are all fields filled ?
+        if request.form['username'] and request.form['password'] :
+            # Get infos from database
+            db = get_db()
+            cur = db.execute('SELECT username, password, salt FROM users WHERE username=?',
+                    [request.form['username']])
+            user = cur.fetchone()
+
+            # Does this user exists
+            if not user :
+                error = 'Incorrect credentials'
+            else :
+                # Is the given password the correct one
+                if saltpassword(request.form['password'], user['salt']) == user['password'] :
+                    session['logged_in'] = True
+                    log('User '+request.form['username']+' connected')
+                    flash('Successfully connected')
+                    # back to the welcome page
+
+                    return redirect(url_for('welcome'))
+                else :
+                    error = 'Incorrect credentials'
+        else :
+            error = 'No credentials given'
+
+    # In case of failed connection or GET method (= display page )
     return render_template('login.html', error=error)
+
 
 @app.route('/logout')
 def logout():
