@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 
-# all the imports
+# Import PyPI packages
 import os
 import sqlite3
 import time
 from random import randint
 from hashlib import sha256
+
+# Import other packages
+from email_validator import validate_email, EmailNotValidError
+
+# Import flask packages
 from flask import Flask, request, session, g, redirect, url_for, abort, \
              render_template, flash
 
@@ -73,7 +78,7 @@ def log (message, level='INFO') :
 def welcome():
     """The default web page presenting the different mail infos"""
 
-    if not session.get('logged_in') :
+    if not session.get('user_id') :
         return redirect( url_for( 'login' ) )
     else :
         # Get the mailboxes and aliases from database (mails = mailboxes + aliases)
@@ -99,9 +104,59 @@ def welcome():
 
 
 
-@app.route('/addalias/<int:id>', methods=['GET', 'POST'])
-def add_alias(id):
-    return welcome()
+@app.route('/addalias/<int:mailbox_id>', methods=['GET', 'POST'])
+def add_alias(mailbox_id):
+    """The page to add 1 alias to a specific mailbox"""
+    
+    if not session.get('user_id') :
+        return redirect(url_for('login'))
+
+    # Get the address associated with the wanted id
+    db = get_db()
+    cur = db.execute('SELECT address FROM mailboxes WHERE id=?', [mailbox_id])
+    mailbox = cur.fetchone()
+
+    # Is the mailbox_id valid ?
+    if not mailbox :
+        flash ('The mailbox you\'ve asked to add an alias to doesn\'t exist')
+        return redirect(url_for('welcome'))
+    
+    # Possible error
+    error = None
+
+    # Has the user filled the form ?
+    if request.method == 'POST' :
+        # Is the field not empty
+        if not request.form['alias'] :
+            error = 'The alias field can\'t be empty'
+        else :
+            try :
+                # Is it a valid email ?
+                v = validate_email(request.form['alias'])
+                alias = v['email']
+                # If no exceptions so far, let's update the db
+                db.execute('INSERT INTO aliases (address, target_id) VALUES (?, ?)',
+                        [alias, mailbox_id])
+                db.commit()
+            except EmailNotValidError as e :
+                # Only exception from validate_email (= email not valid )
+                error = request.form['alias']+' is not a valid email'
+                log (sys.exc_info())
+            except :
+                # Other exceptions ( about database request )
+                error = 'Something went wrong while updating the database'
+                log (sys.exc_info())
+            else :
+                # Everyting is ok, notify the user about success and go back to welcome page
+                log ('Alias '+alias+' added to '+str(mailbox_id))
+                flash (alias+' has been successfully added as an alias')
+                return redirect(url_for('welcome'))
+
+    # In case of something wrong, go back to the form with the error displayed
+    return render_template('addalias.html', error=error, mailbox_address=mailbox['address'])
+
+
+
 
 @app.route('/addmailbox', methods=['GET', 'POST'])
 def add_mailbox():
