@@ -15,8 +15,6 @@ app.config.from_object(__name__) # load config from this file , mailmanager.py
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'mailmanager.db'),
     SECRET_KEY='development-key',
-    USERNAME='admin',
-    PASSWORD='default'
     ))
 app.config.from_envvar('MAILMANAGER_SETTINGS', silent=True)
 
@@ -50,7 +48,7 @@ def init_db():
 def initdb_command():
     """Initializes the database."""
     init_db()
-    print('Initialized the database.')
+    log('Initialized the database.')
 
 
 
@@ -77,10 +75,36 @@ def welcome():
     if not session.get('logged_in') :
         return redirect( url_for( 'login' ) )
     else :
-        return render_template('welcome.html')
+        # Get the mailboxes and aliases from database (mails = mailboxes + aliases)
+        mails = []
+
+        db = get_db()
+
+        cur = db.execute('SELECT id, address FROM mailboxes')
+        mailboxes = cur.fetchall()
+
+        for mailbox in mailboxes :
+            cur = db.execute('SELECT id, address FROM aliases WHERE target_id=?',
+                    [mailbox['id']])
+            aliases = cur.fetchall()
+
+            mails.append ({'address': mailbox['address'],
+                            'id': mailbox['id'],
+                            'aliases' : aliases})
+
+        return render_template('welcome.html', mails=mails)
 
 
 
+
+
+@app.route('/addalias/<int:id>', methods=['GET', 'POST'])
+def add_alias(id):
+    return welcome()
+
+@app.route('/addmailbox', methods=['GET', 'POST'])
+def add_mailbox():
+    return welcome()
 
 
 

@@ -6,5 +6,16 @@ CREATE TABLE users (
     salt text net null
 );
 
-INSERT INTO users (username, password, salt)
-VALUES ("moamoak", "eda1b367003c6dd6a3e5650a2bd02b393947e37d3f7184b736802ce7afe5c7c8", "123456789");
+DROP TABLE IF EXISTS mailboxes;
+CREATE TABLE mailboxes (
+    id integer primary key autoincrement,
+    address text not null unique
+);
+
+DROP TABLE IF EXISTS aliases;
+CREATE TABLE aliases (
+    id integer primary key autoincrement,
+    address text not null unique,
+    target_id integer
+);
+
