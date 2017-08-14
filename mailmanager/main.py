@@ -20,7 +20,7 @@ app.config.from_object(__name__) # load config from this file , mailmanager.py
 
 #Load default config and override config from an environment variable
 app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'mailmanager.db'),
+    DATABASE=os.path.join(app.root_path, 'db/mailmanager.db'),
     SECRET_KEY='development-key',
     ))
 app.config.from_envvar('MAILMANAGER_SETTINGS', silent=True)
@@ -47,7 +47,7 @@ def close_db(error):
 
 def init_db():
     db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
+    with app.open_resource('db/schema.sql', mode='r') as f:
         db.cursor().executescript(f.read())
         db.commit()
 

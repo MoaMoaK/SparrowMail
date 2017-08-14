@@ -1,6 +1,5 @@
 venv/
-mailmanager/main.pyc
-mailmanager/__init__.pyc
+*.pyc
 save_nogit/
-mailmanager/mailmanager.db
+mailmanager/db/mailmanager.db
 mailmanager.egg-info/
