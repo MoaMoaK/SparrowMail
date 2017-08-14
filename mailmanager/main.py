@@ -205,8 +205,69 @@ def add_mailbox():
 
 
 
+@app.route('/delmail/<int:mail_id>')
+def del_mail(mail_id) :
+    """The web page to delete a mail (either alias or mailbox)"""
 
-@app.route('/edituser/', methods=['GET', 'POST'])
+    if not session.get('user_id') :
+        return redirect(url_for('login'))
+
+    # Get some info about the mail asked to be deleted
+    db = get_db()
+    cur = db.execute('SELECT address, target_id FROM mails WHERE id=?', [mail_id])
+    mail = cur.fetchone()
+
+    # Does the mail exists
+    if not mail :
+        flash ('The mail asked to be deleted doesn\'t exists')
+        return redirect( url_for( 'welcome' ) )
+
+    # Does the mail have a target_id (= alias )
+    if mail['target_id'] :
+        del_alias(mail_id)
+    # If it's a mailbox
+    else :
+        del_mailbox(mail_id)
+
+    # Go back to the welcome page
+    # Errors or success are displayed in flash messages
+    return redirect( url_for( 'welcome' ) )
+
+
+def del_alias(alias_id) :
+    """Delete a specific alias. Not assiociated with an URL so assume the alias_id
+    exists and is trully and alias. This verification must have been done earlier."""
+    
+    db = get_db()
+    try :
+        db.execute('DELETE FROM mails WHERE id=?', [alias_id])
+        db.commit()
+    except :
+        log (sys.exc_info())
+        flash ('Something went wrong while deleting the alias from the database')
+    else :
+        flash ('Alias successfully deleted')
+
+
+def del_mailbox(mailbox_id) :
+    """Delete a specific mailbox. Not associated with an URL so assume the mailbox_id
+    has been verified earlier as a correct one."""
+
+    db = get_db()
+    try :
+        db.execute('DELETE FROM mails WHERE target_id=?', [mailbox_id])
+        db.execute('DELETE FROM mails WHERE id=?', [mailbox_id])
+        db.commit()
+    except :
+        log (sys.exc_info())
+        flash ('Something went wrong while deleting the mailbox from the database')
+    else :
+        flash ('Mailbox successfully deleted')
+
+    
+
+
+@app.route('/edituser', methods=['GET', 'POST'])
 def edit_user():
     """The page where a user can edit it's personal infos"""
 

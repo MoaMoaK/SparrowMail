@@ -2,11 +2,17 @@
 {% block body %}
 <dl>
     {% for m in mails %}
-    <dt>{{ m.address }}</dt>
+    <dt>{{ m.address }}
+	<a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button">Delete</a>
+    </dt>
         {% for a in m.aliases %}
-        <dd>{{ a.address }}</dd>
+        <dd>{{ a.address }}&nbsp;
+	    <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">Delete</a>
+	</dd>
         {% endfor %}
-	<dd><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button">Add alias</a></dd>
+	<dd><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button">Add alias</a>
+	</dd>
+
     {% endfor %}
     <dt><a href="{{ url_for('add_mailbox') }}" class="button">Add mailbox</a></dt>
 </dl>
