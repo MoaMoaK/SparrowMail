@@ -15,14 +15,12 @@ from email_validator import validate_email, EmailNotValidError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
              render_template, flash
 
-app = Flask(__name__) # create the application instance :)
-app.config.from_object(__name__) # load config from this file , mailmanager.py
+from config import *
 
-#Load default config and override config from an environment variable
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'db/mailmanager.db'),
-    SECRET_KEY='development-key',
-    ))
+app = Flask(__name__) # create the application instance :)
+app.config.from_object('mailmanager.config.DebugConfig') # load config from the config.py file
+
+# Override config from an environment variable
 app.config.from_envvar('MAILMANAGER_SETTINGS', silent=True)
 
 def connect_db():
