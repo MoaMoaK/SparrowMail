@@ -1,13 +1,6 @@
-import os
-
-class Config(object) :
-    DEBUG = False
-    TESTING = False
-    DATABASE = 'mailmanager/db/mailmanager.db'
-    SECRET_KEY = 'development-key'
-
-class DebugConfig(Config) :
-    DEBUG = True
-
-class TestConfig(Config) :
-    TESTING = True
+DEBUG = False
+TESTING = False
+DATABASE = 'mailmanager/db/mailmanager.db'
+SECRET_KEY = 'development-key'
+ALIASES_FILE_PATH = '/tmp/aliases'
+MAILBOXES_FILE_PATH = '/tmp/mailboxes'

@@ -15,10 +15,11 @@ from email_validator import validate_email, EmailNotValidError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
              render_template, flash
 
-from config import *
+# Import custom packages
+from mailmanager.scripts import postfix
 
 app = Flask(__name__) # create the application instance :)
-app.config.from_object('mailmanager.config.DebugConfig') # load config from the config.py file
+app.config.from_object('mailmanager.config') # load config from the config.py file
 
 # Override config from an environment variable
 app.config.from_envvar('MAILMANAGER_SETTINGS', silent=True)
@@ -71,6 +72,20 @@ def log (message, level='INFO') :
     print(time.ctime() + ' ['+level+'] ' + str(message))
     return None
 
+
+def update_postfix() :
+    db = get_db()
+    
+    cur = db.execute('SELECT m1.address as a1, m2.address as a2 FROM mails as m1 JOIN mails as m2 ON m1.target_id=m2.id OR m1.target_id ISNULL AND m1.address=m2.address')
+    aliases_dict = cur.fetchall()
+    aliases_list = [ (a['a1'], a['a2']) for a in aliases_dict ]
+
+    cur = db.execute('SELECT address FROM mails WHERE target_id ISNULL')
+    mailboxes_dict = cur.fetchall()
+    mailboxes_list = [ m['address'] for m in mailboxes_dict ]
+
+    postfix.update(app.config['ALIASES_FILE_PATH'], app.config['MAILBOXES_FILE_PATH'],
+            aliases_list, mailboxes_list)
 
 
 @app.route('/', methods=['GET'])
@@ -137,6 +152,7 @@ def add_alias(mailbox_id):
                 db.execute('INSERT INTO mails (address, target_id) VALUES (?, ?)',
                         [new_alias, mailbox_id])
                 db.commit()
+                update_postfix()
             except EmailNotValidError as e :
                 # Only exception from validate_email (= email not valid )
                 error = request.form['alias']+' is not a valid email'
@@ -183,6 +199,7 @@ def add_mailbox():
                 db.execute('INSERT INTO mails (address) VALUES (?)',
                         [new_mailbox])
                 db.commit()
+                update_postfix()
             except EmailNotValidError as e :
                 # Only exception from validate_email (= email not valid )
                 error = request.form['mailbox']+' is not a valid email'
@@ -226,6 +243,8 @@ def del_mail(mail_id) :
     # If it's a mailbox
     else :
         del_mailbox(mail_id)
+
+    update_postfix()
 
     # Go back to the welcome page
     # Errors or success are displayed in flash messages
