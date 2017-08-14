@@ -87,11 +87,11 @@ def welcome():
 
         db = get_db()
 
-        cur = db.execute('SELECT id, address FROM mailboxes')
+        cur = db.execute('SELECT id, address FROM mails WHERE target_id ISNULL')
         mailboxes = cur.fetchall()
 
         for mailbox in mailboxes :
-            cur = db.execute('SELECT id, address FROM aliases WHERE target_id=?',
+            cur = db.execute('SELECT id, address FROM mails WHERE target_id=?',
                     [mailbox['id']])
             aliases = cur.fetchall()
 
@@ -114,7 +114,7 @@ def add_alias(mailbox_id):
 
     # Get the address associated with the wanted id
     db = get_db()
-    cur = db.execute('SELECT address FROM mailboxes WHERE id=?', [mailbox_id])
+    cur = db.execute('SELECT address FROM mails WHERE id=? AND target_id ISNULL', [mailbox_id])
     mailbox = cur.fetchone()
 
     # Is the mailbox_id valid ?
@@ -136,7 +136,7 @@ def add_alias(mailbox_id):
                 v = validate_email(request.form['alias'])
                 new_alias = v['email']
                 # If no exceptions so far, let's update the db
-                db.execute('INSERT INTO aliases (address, target_id) VALUES (?, ?)',
+                db.execute('INSERT INTO mails (address, target_id) VALUES (?, ?)',
                         [new_alias, mailbox_id])
                 db.commit()
             except EmailNotValidError as e :
@@ -182,7 +182,7 @@ def add_mailbox():
                 new_mailbox = v['email']
                 # If no exceptions so far, let's update the db
                 db = get_db()
-                db.execute('INSERT INTO mailboxes (address) VALUES (?)',
+                db.execute('INSERT INTO mails (address) VALUES (?)',
                         [new_mailbox])
                 db.commit()
             except EmailNotValidError as e :

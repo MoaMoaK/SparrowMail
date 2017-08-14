@@ -6,16 +6,11 @@ CREATE TABLE users (
     salt text net null
 );
 
-DROP TABLE IF EXISTS mailboxes;
-CREATE TABLE mailboxes (
-    id integer primary key autoincrement,
-    address text not null unique
-);
 
-DROP TABLE IF EXISTS aliases;
-CREATE TABLE aliases (
-    id integer primary key autoincrement,
-    address text not null unique,
+DROP TABLE IF EXISTS mails;
+CREATE TABLE mails (
+    id              integer primary key autoincrement,
+    address         text    not null unique,
     target_id integer
 );
 
