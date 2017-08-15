@@ -90,31 +90,47 @@ def update_postfix() :
 
 @app.route('/', methods=['GET'])
 def welcome():
-    """The default web page presenting the different mail infos"""
+    """The default welcome web page"""
+
+    return render_template('welcome.html')
+
+@app.route('/folders/', methods=['GET'])
+def folders():
+    """The folder web page"""
+
+    return render_template('folders.html')
+    
+@app.route('/filters/', methods=['GET'])
+def filters():
+    """The filter web"""
+
+    return render_template('filters.html')
+
+@app.route('/mails/', methods=['GET'])
+def mails():
+    """The web page presenting the different mail infos"""
 
     if not session.get('user_id') :
         return redirect( url_for( 'login' ) )
-    else :
-        # Get the mailboxes and aliases from database (mails = mailboxes + aliases)
-        mails = []
 
-        db = get_db()
+    # Get the mailboxes and aliases from database (mails = mailboxes + aliases)
+    mails = []
 
-        cur = db.execute('SELECT id, address FROM mails WHERE target_id ISNULL')
-        mailboxes = cur.fetchall()
+    db = get_db()
 
-        for mailbox in mailboxes :
-            cur = db.execute('SELECT id, address FROM mails WHERE target_id=?',
-                    [mailbox['id']])
-            aliases = cur.fetchall()
+    cur = db.execute('SELECT id, address FROM mails WHERE target_id ISNULL')
+    mailboxes = cur.fetchall()
 
-            mails.append ({'address': mailbox['address'],
-                            'id': mailbox['id'],
-                            'aliases' : aliases})
+    for mailbox in mailboxes :
+        cur = db.execute('SELECT id, address FROM mails WHERE target_id=?',
+                [mailbox['id']])
+        aliases = cur.fetchall()
 
-        return render_template('welcome.html', mails=mails)
+        mails.append ({'address': mailbox['address'],
+                        'id': mailbox['id'],
+                        'aliases' : aliases})
 
-
+    return render_template('mails.html', mails=mails)
 
 
 

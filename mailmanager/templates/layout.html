@@ -5,6 +5,9 @@
 <header>    
 	<ul>
 		<li class="title"><a href="{{ url_for('welcome') }}">MailManager</a></li>
+		<li class="service"><a href="{{ url_for('mails') }}">Mails</a></li>
+		<li class="service"><a href="{{ url_for('folders') }}">Folders</a></li>
+		<li class="service"><a href="{{ url_for('filters') }}">Filters</a></li>
 		{% if not session.user_id %}
 		<li class="metanav"><a href="{{ url_for('login') }}">log in</a></li>
 		{% else %}

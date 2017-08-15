@@ -36,8 +36,9 @@ header ul {
 	overflow: hidden;
 	background-color: forestgreen;
 	}
-header li{ float: left; }
+header li{ float: left; line-height: 30px; }
 header li.metanav { float:right; }
+header li.title {font-size: 1.5em; }
 header li a {
 	display: block;
 	color: white;
