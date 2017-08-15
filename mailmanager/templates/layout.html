@@ -1,17 +1,38 @@
 <!doctype html>
 <title>MailManager</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-    <a href="{{ url_for('welcome') }}"><h1>MailManager</h1></a>
-    <div class=metanav>
-    {% if not session.user_id %}
-        <a href="{{ url_for('login') }}">log in</a>
-    {% else %}
-    	<a href="{{ url_for('logout') }}">log out</a>
-    	<a href="{{ url_for('edit_user') }}">Account settings</a>
-    {% endif %}
-        </div>
-    {% for message in get_flashed_messages() %}
+
+<header>    
+	<ul>
+		<li class="title"><a href="{{ url_for('welcome') }}">MailManager</a></li>
+		{% if not session.user_id %}
+		<li class="metanav"><a href="{{ url_for('login') }}">log in</a></li>
+		{% else %}
+		<li class="metanav"><a href="{{ url_for('logout') }}">log out</a></li>
+		<li class="metanav"><a href="{{ url_for('edit_user') }}">Account settings</a></li>
+		{% endif %}
+	</ul>
+	{% for message in get_flashed_messages() %}
 	<div class=flash>{{ message }}</div>
-    {% endfor %}
-    {% block body %}{% endblock %}
-</div>
+	{% endfor %}
+</header>
+
+<main>
+	{% block body %}{% endblock %}
+</main>
+
+<footer>
+	<ul>
+	<li class="powered-by">
+		Powered by <a href="http://flask.pocoo.org/"><img src="{{ url_for( 'static', filename='flask.png') }}" alt="Flask" height=32>
+		</a>
+	</li>
+	<li class="made-by">
+		MailManager - <a href="https://www.maelkervella.eu">Maël Kervella</a>
+	</li>
+	<li class="git">
+		Project on <a href="https://gitlab.rez-rennes.fr/moamoak/mailmanager">
+			<img src="{{ url_for('static', filename='gitlab.png') }}" alt="Gitlab" height=32>
+		</a>
+	</li>
+</footer>

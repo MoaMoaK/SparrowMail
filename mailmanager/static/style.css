@@ -1,4 +1,4 @@
-body            { font-family: sans-serif; background: #eee; }
+/*body            { font-family: sans-serif; background: #eee; }
 a, h1, h2       { color: #377ba8; }
 h1, h2          { font-family: 'Georgia', serif; margin: 0; }
 h1              { border-bottom: 2px solid #eee; }
@@ -12,11 +12,65 @@ h2              { font-size: 1.2em; }
 .add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
 .add-entry dl   { font-weight: bold; }
 .metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
-                      margin-bottom: 1em; background: #fafafa; }
-.flash          { background: #cee5F5; padding: 0.5em;
+                      margin-bottom: 1em; background: #fafafa; }*/
+/*.flash          { background: #cee5F5; padding: 0.5em;
                       border: 1px solid #aacbe2; }
-.error          { background: #f0d6d6; padding: 0.5em; }
+.error          { background: #f0d6d6; padding: 0.5em; }*/
 
-a.button        { -webkit-appearance: button; -moz-appearance: button;
+/*a.button        { -webkit-appearance: button; -moz-appearance: button;
                       appearance: button; text-decoration: none;
-	              color: initial; })
+	              color: initial; })*/
+/* HTML & BODY */
+html { height: 100% }
+body { margin: 0; min-height: 100%; position: relative; }
+
+/* HEADER
+ * fixed on top 
+ * display inline with links on the right and the left */
+header {
+	position: fixed;
+	top: 0;
+	width: 100%; }
+header ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: forestgreen;
+	}
+header li{ float: left; }
+header li.metanav { float:right; }
+header li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none; }
+header li:not(.title) a:hover { background-color: darkgreen; }
+
+/* MAIN
+ * padded to let some space for header and footer */
+main { padding: 50px 20px 50px 20px; }
+
+/* FOOTER
+ * set at the bottom of page but don't overlap the main */
+footer {
+	font-size: small;
+	text-align: center;
+	bottom:0;
+	width: 100%;
+	position: absolute; }
+footer ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0px 10px;
+	overflow: hidden;
+	background-color: darkslategrey; 
+	color: white; }
+footer li { display: inline; line-height: 30px; }
+footer li.powered-by { float: left; }
+footer li.git { float:right; }
+footer li a { color: white; text-decoration: underline; }
+footer li img { display: inline; vertical-align: middle; }
+
+
