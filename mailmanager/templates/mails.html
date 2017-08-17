@@ -6,11 +6,11 @@
 
 <dl>
     {% for m in mails %}
-    <dt>{{ m.address }}
+    <dt>{{ m.address }} {% if m.end_date %}End : {{ m.end_date }} {% endif %}&nbsp;
 	<a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button">Delete</a>
     </dt>
         {% for a in m.aliases %}
-        <dd>{{ a.address }}&nbsp;
+	<dd>{{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}&nbsp;
 	    <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">Delete</a>
 	</dd>
         {% endfor %}

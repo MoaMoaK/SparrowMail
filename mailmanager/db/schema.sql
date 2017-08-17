@@ -6,11 +6,10 @@ CREATE TABLE users (
     salt text net null
 );
 
-
 DROP TABLE IF EXISTS mails;
 CREATE TABLE mails (
-    id              integer primary key autoincrement,
-    address         text    not null unique,
-    target_id integer
+    id           integer primary key autoincrement,
+    address      text    not null unique,
+    target_id    integer,
+    end_date     integer
 );
-

@@ -7,6 +7,8 @@ import sqlite3
 import time
 from random import randint
 from hashlib import sha256
+from datetime import datetime
+from exceptions import ValueError
 
 # Import other packages
 from email_validator import validate_email, EmailNotValidError
@@ -118,16 +120,17 @@ def mails():
 
     db = get_db()
 
-    cur = db.execute('SELECT id, address FROM mails WHERE target_id ISNULL')
+    cur = db.execute('SELECT id, address, end_date FROM mails WHERE target_id ISNULL')
     mailboxes = cur.fetchall()
 
     for mailbox in mailboxes :
-        cur = db.execute('SELECT id, address FROM mails WHERE target_id=?',
+        cur = db.execute('SELECT id, address, end_date FROM mails WHERE target_id=?',
                 [mailbox['id']])
         aliases = cur.fetchall()
 
         mails.append ({'address': mailbox['address'],
                         'id': mailbox['id'],
+                        'end_date' : mailbox['end_date'],
                         'aliases' : aliases})
 
     return render_template('mails.html', mails=mails)
@@ -157,31 +160,49 @@ def add_alias(mailbox_id):
     # Has the user filled the form ?
     if request.method == 'POST' :
         # Is the field not empty
-        if not request.form['alias'] :
+        if not request.form.get('alias') :
             error = 'The alias field can\'t be empty'
         else :
             try :
+                # Get the date limit if there is one
+                end_date=None
+                if request.form.get('end') :
+                    end_str = "-".join([request.form.get(select).zfill(2) for select in ['endyear', 'endmonth', 'endday', 'endhour', 'endmin', 'endsec']])
+                    end_date=datetime.strptime(end_str, "%Y-%m-%d-%H-%M-%S")
+
                 # Is it a valid email ?
-                v = validate_email(request.form['alias'])
+                v = validate_email(request.form.get('alias'))
                 new_alias = v['email']
                 # If no exceptions so far, let's update the db
-                db.execute('INSERT INTO mails (address, target_id) VALUES (?, ?)',
-                        [new_alias, mailbox_id])
+                db.execute('INSERT INTO mails (address, target_id, end_date) VALUES (?, ?, ?)',
+                        [new_alias, mailbox_id, end_date])
                 db.commit()
                 update_postfix()
-            except EmailNotValidError as e :
+            except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
-                error = request.form['alias']+' is not a valid email'
+                error = request.form.get('alias')+' is not a valid email'
+                log (sys.exc_info())
+            except sqlite3.OperationalError :
+                # Exceptions about database request
+                error = 'Something went wrong while updating the database'
+                log (sys.exc_info())
+            except sqlite3.IntegrityError :
+                # Exceptions about integrity of database probably unique constraint
+                error = 'This mail address may be used, try another one'
+                log (sys.exc_info())
+            except ValueError :
+                # Exceptions about datetime wrong value
+                erro = 'Please don\'t even try to mess up with the form'
                 log (sys.exc_info())
             except :
-                # Other exceptions ( about database request )
-                error = 'Something went wrong while updating the database'
+                # Other excpetions
+                error = 'Something went wrong'
                 log (sys.exc_info())
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
                 log ('Alias '+new_alias+' added to '+str(mailbox_id))
                 flash (new_alias+' has been successfully added as an alias')
-                return redirect(url_for('welcome'))
+                return redirect(url_for('mails'))
 
     # If GET method used or
     # In case of something wrong, go back to the form with the error displayed
@@ -203,32 +224,54 @@ def add_mailbox():
     # Has the user filled the form ?
     if request.method == 'POST' :
         # Is the field not empty
-        if not request.form['mailbox'] :
+        if not request.form.get('mailbox') :
             error = 'The mailbox field can\'t be empty'
         else :
             try :
+                # Get the date limit if there is one
+                end_date=None
+                if request.form.get('end') :
+                    end_str = "-".join([request.form.get(select).zfill(2) for select in ['endyear', 'endmonth', 'endday', 'endhour', 'endmin', 'endsec']])
+                    end_date=datetime.strptime(end_str, "%Y-%m-%d-%H-%M-%S")
+
                 # Is it a valid email ?
-                v = validate_email(request.form['mailbox'])
+                v = validate_email(request.form.get('mailbox'))
                 new_mailbox = v['email']
+
                 # If no exceptions so far, let's update the db
                 db = get_db()
-                db.execute('INSERT INTO mails (address) VALUES (?)',
-                        [new_mailbox])
+                db.execute('INSERT INTO mails (address, end_date) VALUES (?, ?)',
+                        [new_mailbox, end_date])
                 db.commit()
+
+                # Update the files
                 update_postfix()
-            except EmailNotValidError as e :
+            except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
-                error = request.form['mailbox']+' is not a valid email'
+                error = request.form.get('mailbox')+' is not a valid email'
                 log (sys.exc_info())
-            except :
-                # Other exceptions ( about database request )
+            except sqlite3.OperationalError :
+                # Exceptions about database
                 error = 'Something went wrong while updating the database'
                 log (sys.exc_info())
+            except sqlite3.IntegrityError :
+                # Exceptions about integrity of database probably unique constraint
+                error = 'This mail address may be used, try another one'
+                log (sys.exc_info())
+            except ValueError :
+                # Exceptions about datetime wrong value
+                erro = 'Please don\'t even try to mess up with the form'
+                log (sys.exc_info())
+            except :
+                # Other exceptions
+                error = 'Something went wrong'
+                log (sys.exc_info())
+                raise
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
                 log ('Mailbox '+new_mailbox+' added')
                 flash (new_mailbox+' has been successfully added as a mailbox')
-                return redirect(url_for('welcome'))
+                return redirect(url_for('mails'))
     
     # If GET method used or
     # In case of something wrong, go back to the form with the error displayed
@@ -264,7 +307,7 @@ def del_mail(mail_id) :
 
     # Go back to the welcome page
     # Errors or success are displayed in flash messages
-    return redirect( url_for( 'welcome' ) )
+    return redirect( url_for( 'mails' ) )
 
 
 def del_alias(alias_id) :
@@ -326,8 +369,8 @@ def edit_user():
     # The POST method is used (= the user has filled the form with new infos)
     if request.method == 'POST':
         # Has the username been changed ?
-        if request.form['username'] and request.form['username'] != user['username']:
-            username = request.form['username']
+        if request.form.get('username') and request.form.get('username') != user['username']:
+            username = request.form.get('username')
             # Trying to change the name in the database
             try :
                 db.execute('UPDATE users SET username=? WHERE id=?',
@@ -342,16 +385,16 @@ def edit_user():
 
 
         # Has the password been changed ?
-        if request.form['password1'] or request.form['password2'] :
-            if not request.form['password1'] or not request.form['password2'] :
+        if request.form.get('password1') or request.form.get('password2') :
+            if not request.form.get('password1') or not request.form.get('password2') :
                 # One of the two password field is empty
                 error_pass = 'Please fill in both password field'
-            elif request.form['password1'] != request.form['password2'] :
+            elif request.form.get('password1') != request.form.get('password2') :
                 # Both password field don't match
                 error_pass = 'Password don\'t match'
             else :
                 # Everything is allright let's get password and salt ready
-                password = request.form['password1']
+                password = request.form.get('password1')
                 salt = randint(1000000, 1000000000)
                 # Trying to actually modify the db
                 try :
@@ -385,11 +428,11 @@ def login():
     # Has the user used POST method (= try to login )
     if request.method == 'POST':
         # Are all fields filled ?
-        if request.form['username'] and request.form['password'] :
+        if request.form.get('username') and request.form.get('password') :
             # Get infos from database
             db = get_db()
             cur = db.execute('SELECT id, username, password, salt FROM users WHERE username=?',
-                    [request.form['username']])
+                    [request.form.get('username')])
             user = cur.fetchone()
 
             # Does this user exists
@@ -397,9 +440,9 @@ def login():
                 error = 'Incorrect credentials'
             else :
                 # Is the given password the correct one
-                if saltpassword(request.form['password'], user['salt']) == user['password'] :
+                if saltpassword(request.form.get('password'), user['salt']) == user['password'] :
                     session['user_id'] = user['id']
-                    log('User '+request.form['username']+' connected')
+                    log('User '+request.form.get('username')+' connected')
                     flash('Successfully connected')
                     # back to the welcome page
 
