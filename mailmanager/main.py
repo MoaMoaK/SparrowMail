@@ -338,7 +338,8 @@ def del_mail(mail_id) :
             if mail['target_id'] :
 
                 # Get info about the associated mailbox
-                cur = db.execute( 'SELECT address FROM mails WHERE id=?', mail['target_id'])
+                log (mail['target_id'])
+                cur = db.execute( 'SELECT address FROM mails WHERE id=?', [mail['target_id']])
                 associated_mailbox = cur.fetchone()
                 
                 # Is the password correct ?
