@@ -19,6 +19,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 
 # Import custom packages
 from mailmanager.scripts import postfix
+from mailmanager.scripts import dovecot
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object('mailmanager.config') # load config from the config.py file
@@ -75,7 +76,9 @@ def log (message, level='INFO') :
     return None
 
 
-def update_postfix() :
+def update_postfix_mails() :
+    """Get all mails info and trigger the postfix.update function with it"""
+
     db = get_db()
     
     cur = db.execute('SELECT m1.address as a1, m2.address as a2 FROM mails as m1 JOIN mails as m2 ON m1.target_id=m2.id OR m1.target_id ISNULL AND m1.address=m2.address')
@@ -88,6 +91,14 @@ def update_postfix() :
 
     postfix.update(app.config['ALIASES_FILE_PATH'], app.config['MAILBOXES_FILE_PATH'],
             aliases_list, mailboxes_list)
+
+def add_dovecot_passwd( mailbox_add, pw ) :
+    """Triggers the dovecot.update_passwd function with the right info"""
+    
+    dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+
+
+
 
 
 @app.route('/', methods=['GET'])
@@ -177,7 +188,8 @@ def add_alias(mailbox_id):
                 db.execute('INSERT INTO mails (address, target_id, end_date) VALUES (?, ?, ?)',
                         [new_alias, mailbox_id, end_date])
                 db.commit()
-                update_postfix()
+                update_postfix_mails()
+
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
                 error = request.form.get('alias')+' is not a valid email'
@@ -223,9 +235,14 @@ def add_mailbox():
 
     # Has the user filled the form ?
     if request.method == 'POST' :
-        # Is the field not empty
+        # Is the mailbox field not empty
         if not request.form.get('mailbox') :
             error = 'The mailbox field can\'t be empty'
+        # Are the password fields not empty
+        elif not request.form.get('password1') or not request.form.get('password2'):
+            error = 'Please fill in the password field'
+        elif request.form.get('password1') != request.form.get('password2'):
+            error = 'Password don\'t match'
         else :
             try :
                 # Get the date limit if there is one
@@ -244,8 +261,12 @@ def add_mailbox():
                         [new_mailbox, end_date])
                 db.commit()
 
-                # Update the files
-                update_postfix()
+                # Update the mailboxes files
+                update_postfix_mails()
+
+                # Update the password file
+                add_dovecot_passwd(new_mailbox, request.form.get('password1'))
+
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
                 error = request.form.get('mailbox')+' is not a valid email'
@@ -303,7 +324,7 @@ def del_mail(mail_id) :
     else :
         del_mailbox(mail_id)
 
-    update_postfix()
+    update_postfix_mails()
 
     # Go back to the welcome page
     # Errors or success are displayed in flash messages
