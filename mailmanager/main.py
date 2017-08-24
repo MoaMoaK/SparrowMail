@@ -294,7 +294,7 @@ def add_mailbox():
                 log (sys.exc_info())
                 raise
             else :
-                # Everyting is ok, notify the user about success and go back to welcome page
+                # Everyting is ok, notify the user about success and go back to mails page
                 log ('Mailbox '+new_mailbox+' added')
                 flash (new_mailbox+' has been successfully added as a mailbox')
                 return redirect(url_for('mails'))
