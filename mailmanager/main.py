@@ -365,7 +365,7 @@ def del_mail(mail_id) :
             return redirect( url_for( 'mails' ) )
 
     # Render the HTML template with associated error if necessary
-    return render_template('delmail.html', error=error)
+    return render_template('delmail.html', mail=mail['address'], error=error)
 
 
 def del_alias(alias_id) :
