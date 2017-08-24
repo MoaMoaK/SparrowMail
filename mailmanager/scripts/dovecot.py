@@ -2,9 +2,12 @@
 
 import subprocess
 
-def add_passwd(passwd_file_path, address, pw) :
-    f = open(passwd_file_path, 'a')
+def add_passwd( passwd_file_path, address, pw ) :
+    """Add a mail_address:hased_password line into the password file"""
 
+    f = open( passwd_file_path, 'a' )
+
+    # Hash the password and write it in file
     hashed_passwd = subprocess.check_output(['doveadm', 'pw', '-s', 'SSHA512', '-p', pw])
     f.write(address+':'+hashed_passwd)
 
