@@ -217,7 +217,7 @@ def add_alias(mailbox_id):
                 log (sys.exc_info())
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
-                log ('Alias '+new_alias+' added to '+str(mailbox_id))
+                log ('Alias '+new_alias+' added to '+mailbox['address'])
                 flash (new_alias+' has been successfully added as an alias')
                 return redirect(url_for('mails'))
 
