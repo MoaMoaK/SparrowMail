@@ -97,6 +97,11 @@ def add_dovecot_passwd( mailbox_add, pw ) :
     
     dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
 
+def check_dovecot_passwd( mailbox_add, pw ):
+    """Triggers the dovecot.check_passwd function with the right info"""
+
+    return dovecot.check_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+
 
 
 
@@ -300,7 +305,7 @@ def add_mailbox():
 
 
 
-@app.route('/delmail/<int:mail_id>')
+@app.route('/delmail/<int:mail_id>', methods=['GET', 'POST'])
 def del_mail(mail_id) :
     """The web page to delete a mail (either alias or mailbox)"""
 
@@ -315,20 +320,51 @@ def del_mail(mail_id) :
     # Does the mail exists
     if not mail :
         flash ('The mail asked to be deleted doesn\'t exists')
-        return redirect( url_for( 'welcome' ) )
+        return redirect( url_for( 'mails' ) )
 
-    # Does the mail have a target_id (= alias )
-    if mail['target_id'] :
-        del_alias(mail_id)
-    # If it's a mailbox
-    else :
-        del_mailbox(mail_id)
+    # Possible error
+    error = None
 
-    update_postfix_mails()
+    # Has the user filled in the form ?
+    if request.method == 'POST' :
 
-    # Go back to the welcome page
-    # Errors or success are displayed in flash messages
-    return redirect( url_for( 'mails' ) )
+        # Is the password field not empty ?
+        if not request.form.get( 'password' ) :
+            error = 'Please fill the password field'
+
+        else :
+
+            # Does the mail have a target_id (= alias )
+            if mail['target_id'] :
+
+                # Get info about the associated mailbox
+                cur = db.execute( 'SELECT address FROM mails WHERE id=?', mail['target_id'])
+                associated_mailbox = cur.fetchone()
+                
+                # Is the password correct ?
+                if not check_dovecot_passwd( associated_mailbox['address'],
+                        request.form.get( 'password' ) ) :
+                    error = 'Wrong password'
+                # You can delete the mail
+                else :
+                    del_alias( mail_id )
+
+            # If it's a mailbox
+            else :
+
+                # Is the password correct ?
+                if not check_dovecot_passwd( mail['address'],
+                        request.form.get( 'password' ) ) :
+                    error = 'Wrong password'
+                # You can delete the mail
+                else :
+                    del_mailbox( mail_id )
+
+            update_postfix_mails()
+            return redirect( url_for( 'mails' ) )
+
+    # Render the HTML template with associated error if necessary
+    return render_template('delmail.html', error=error)
 
 
 def del_alias(alias_id) :
