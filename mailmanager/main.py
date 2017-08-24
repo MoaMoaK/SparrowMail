@@ -286,7 +286,7 @@ def add_mailbox():
                 log (sys.exc_info())
             except ValueError :
                 # Exceptions about datetime wrong value
-                erro = 'Please don\'t even try to mess up with the form'
+                error = 'Please don\'t even try to mess up with the form'
                 log (sys.exc_info())
             except :
                 # Other exceptions
