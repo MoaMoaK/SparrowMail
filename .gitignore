@@ -3,3 +3,4 @@ venv/
 save_nogit/
 mailmanager/db/mailmanager.db
 mailmanager.egg-info/
+*.swp
