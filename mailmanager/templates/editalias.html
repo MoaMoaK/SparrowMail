@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+    <script src="{{ url_for( 'static', filename='util.js' ) }}" type="text/javascript"></script>
+    {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+    <form method="POST">
+	<h2>You are editing {{ alias }}.</h2>
+        <dl>
+	    {% if end_date %}
+	    <dt><input type="checkbox" name="end" onclick="dynDateElements(this);" checked>Set a time limit</dt>
+	        <dd>
+		    <p id="inputdate">
+		        <script type="text/javascript">
+                            dynDateElements(document.getElementsByName("end")[0])
+			</script>
+		    </p>
+		</dd>
+            {% else %}
+	    <dt><input type="checkbox" name="end" onclick="dynDateElements(this);">Set a time limit</dt>
+	        <dd><p id="inputdate"></p>
+	    {% endif %}
+            <dt>Enter the actual password to confirm any modification</dt>
+	        <dd><input name="old_password" type="password"></dd>
+            <dt><input type="submit" value="Validate"></dt>
+        </dl>
+    </form>
+{% endblock %}

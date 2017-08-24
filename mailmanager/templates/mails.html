@@ -11,7 +11,8 @@
     </dt>
         {% for a in m.aliases %}
 	<dd>{{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}&nbsp;
-	    <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">Delete</a>
+	    <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">Delete</a>&nbsp;
+	    <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button">Edit</a>
 	</dd>
         {% endfor %}
 	<dd><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button">Add alias</a>

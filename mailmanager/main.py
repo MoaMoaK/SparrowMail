@@ -303,6 +303,89 @@ def add_mailbox():
     # In case of something wrong, go back to the form with the error displayed
     return render_template('addmailbox.html', error=error)
 
+@app.route('/editalias/<int:alias_id>', methods=['GET', 'POST'])
+def edit_alias(alias_id) :
+    """The web page to edit an alias informations"""
+
+    if not session.get('user_id') :
+        return redirect( url_for('login'))
+
+    # Get some info about the alias asked to be edited
+    db = get_db()
+    cur = db.execute('SELECT address, target_id, end_date FROM mails WHERE id=?', [alias_id])
+    alias = cur.fetchone()
+
+    # Does the alias exists or is it not an alias ?
+    if not alias or not alias['target_id']:
+        flash( 'The alias asked to be deleted doesn\'t exists or is not an alias' )
+        return redirect( url_for( 'mails' ) )
+
+    # Possible error
+    error = None
+
+    # Has the user filled in the form ?
+    if request.method == 'POST' :
+        # Is the password field not empty
+        if not request.form.get( 'old_password' ) :
+            error = "You must fill in the password field to be able to modify anything"
+
+        else :
+            # Get info about the associated mailbox
+            cur = db.execute('SELECT address FROM mails WHERE id=?', [alias['target_id']])
+            associated_mailbox = cur.fetchone()
+
+            # Any strange error ?
+            if not associated_mailbox :
+                error = 'The associated mailbox could not been retrieved, the database may be corrupted'
+
+            # Is the password OK ?
+            elif not check_dovecot_passwd ( associated_mailbox['address'],
+                request.form.get( 'old_password' ) ) :
+                error = 'Wrong password'
+
+             
+            else:
+                # If there is an end_date or there was but not anymore
+                if request.form.get('end') or (not request.form.get('end') and alias['end_date']):
+                    try :
+                        # Get the date limit if there is one
+                        end_date=None
+                        if request.form.get('end') :
+                            end_str = "-".join([request.form.get(select).zfill(2) for select in ['endyear', 'endmonth', 'endday', 'endhour', 'endmin', 'endsec']])
+                            end_date=datetime.strptime(end_str, "%Y-%m-%d-%H-%M-%S")
+                        
+                        # Update the database
+                        db.execute('UPDATE mails SET end_date=? WHERE id=?', [end_date, alias_id])
+                        db.commit()
+                    except sqlite3.OperationalError :
+                        # Exceptions about database
+                        error = 'Something went wrong while updating the database'
+                        log (sys.exc_info())
+                    except ValueError :
+                        # Exceptions about datetime wrong value
+                        error = 'Please don\'t even try to mess up with the form'
+                        log (sys.exc_info())
+                    except :
+                        # Other exceptions
+                        error = 'Something went wrong'
+                        log (sys.exc_info())
+                        raise
+                    else :
+                        # Everyting is ok and notify the user about success
+                        if request.form.get('end') :
+                            log ('Set alias '+alias['address']+' end limit to '+end_date.isoformat())
+                            flash ('End limit for '+alias['address']+' changed to '+end_date.isoformat())
+                        else :
+                            log ('Removed end limit for alias '+alias['address'])
+                            flash ('Removed end limit for '+alias['address'])
+        
+    # Reload data from database in case of a change
+    cur = db.execute('SELECT address, end_date FROM mails WHERE id=?', [alias_id])
+    alias = cur.fetchone()
+    return render_template( 'editalias.html', alias=alias['address'], end_date=alias['end_date'], error=error)
+
+                 
+
 
 
 @app.route('/delmail/<int:mail_id>', methods=['GET', 'POST'])
