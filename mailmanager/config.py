@@ -5,3 +5,6 @@ SECRET_KEY = 'development-key'
 ALIASES_FILE_PATH = '/tmp/aliases'
 MAILBOXES_FILE_PATH = '/tmp/mailboxes'
 PASSWD_FILE_PATH = '/tmp/passwd.db'
+VMAIL_DIR = '/tmp/vmail'
+EXCLUDE_DIR = ['sieve-after', 'sieve-after']
+SIEVE_FILENAME = '.dovecot.sieve'
