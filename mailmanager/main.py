@@ -143,7 +143,7 @@ def folders():
     
 @app.route('/filters/', methods=['GET'])
 def filters():
-    """The filter web"""
+    """The filter web page"""
 
     return render_template('filters.html')
 
