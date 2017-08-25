@@ -20,6 +20,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 # Import custom packages
 from mailmanager.scripts import postfix
 from mailmanager.scripts import dovecot
+from mailmanager.scripts import sieve
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object('mailmanager.config') # load config from the config.py file
@@ -107,6 +108,23 @@ def change_dovecot_passwd( mailbox_add, pw ) :
 
     return dovecot.change_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
 
+def get_sieve_filter_list( ) :
+    """Trigger the sieve.get_filter_list function with the right infos"""
+
+    return sieve.get_filter_list( app.config['VMAIL_DIR'],
+            app.config['SIEVE_FILENAME'], app.config['EXCLUDE_DIRS'] )
+
+def get_sieve_filter_content( mailbox ) :
+    """Triggers the sieve.get_filter_content_from_mailbox with the right infos"""
+
+    return sieve.get_filter_content_from_mailbox( app.config['VMAIL_DIR'],
+            mailbox, app.config['SIEVE_FILENAME'] )
+
+def set_sieve_filter_content( mailbox, content ) :
+    """Triggers the sieve.set_filter_content_from_mailbox with the right infos"""
+
+    return sieve.set_filter_content_from_mailbox( app.config['VMAIL_DIR'],
+            mailbox, app.config['SIEVE_FILENAME'], content )
 
 
 
