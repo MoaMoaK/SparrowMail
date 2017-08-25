@@ -93,12 +93,12 @@ def update_postfix_mails() :
             aliases_list, mailboxes_list)
 
 def add_dovecot_passwd( mailbox_add, pw ) :
-    """Triggers the dovecot.update_passwd function with the right info"""
+    """Triggers the dovecot.update_passwd function with the right infos"""
     
     dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
 
-def check_dovecot_passwd( mailbox_add, pw ):
-    """Triggers the dovecot.check_passwd function with the right info"""
+def check_dovecot_passwd( mailbox_add, pw ) :
+    """Triggers the dovecot.check_passwd function with the right infos"""
 
     return dovecot.check_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
 
