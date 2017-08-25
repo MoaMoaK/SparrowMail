@@ -12,29 +12,36 @@ def get_filter_list( mail_dir_path, sieve_filename, exclude_dirname=[] ) :
 
     res = {}
 
-    data_lvl1 = os.walk( mail_dir_path )
-    dirname_lvl1, dirnames_lvl1, filenames_lvl1 = data_lvl1
+    entries_lvl1 = os.listdir( mail_dir_path )
 
     # for each directory (=domain) in the vmail dir
-    for domain in dirnames_lvl1 :
-        # exclude dir that are not actual domains
+    for domain in entries_lvl1 :
+        # Get absolute path
+        abspath_lvl2 = os.path.join( mail_dir_path, domain )
+
+        # Exclude files
+        if os.path.isfile( abspath_lvl2 ) :
+            continue
+        # Exclude dir that are not actual domains or that are files
         if domain in exclude_dirname :
             continue
         
-        data_lvl2 = os.walk( os.path.join( dirname_lvl1, domain) )
-        dirname_lvl2, dirnames_lvl2, filenames_lvl2 = data_lvl2
+        entries_lvl2 = os.listdir( abspath_lvl2 )
 
         # For each directory (=user) in this domain
-        for user in dirnames_lvl2 :
+        for user in entries_lvl2 :
+            # Get absolute path
+            abspath_lvl3 = os.path.join( abspath_lvl2, user )
+
+            # Exclude files
+            if os.path.isfile( abspath_lvl3 ) :
+                continue
             # Exclude dir that are not actual users
             if user in exclude_dirname :
                 continue
 
-            data_lvl3 = os.walk( os.path.join( dirname_lvl2, user) )
-            dirname_lvl3, dirnames_lvl3, filenames_lvl3 = data_lv3
-            
             # Add this to res variable even if it doesn't exists
-            res[user+'@'+domain] = os.path.join( dirname_lvl3, sieve_filename )
+            res[user+'@'+domain] = os.path.join( abspath_lvl3, sieve_filename )
 
     # And return the results
     return res
