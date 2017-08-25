@@ -145,7 +145,9 @@ def folders():
 def filters():
     """The filter web page"""
 
-    return render_template('filters.html')
+    filters = get_sieve_filter_list()
+
+    return render_template('filters.html', filters=filters)
 
 @app.route('/mails/', methods=['GET'])
 def mails():
