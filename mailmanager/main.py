@@ -325,7 +325,7 @@ def edit_alias(alias_id) :
 
     # Has the user filled in the form ?
     if request.method == 'POST' :
-        # Is the password field not empty
+        # Is the old_password field not empty
         if not request.form.get( 'old_password' ) :
             error = "You must fill in the password field to be able to modify anything"
 
