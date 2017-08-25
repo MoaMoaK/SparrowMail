@@ -11,6 +11,8 @@ def add_passwd( passwd_file_path, address, pw ) :
     hashed_passwd = subprocess.check_output(['doveadm', 'pw', '-s', 'SSHA512', '-p', pw])
     f.write(address+':'+hashed_passwd)
 
+    f.close()
+
 def check_passwd( passwd_file_path, address, pw ) :
     """Check if the given password match the existing one"""
 
@@ -27,11 +29,14 @@ def check_passwd( passwd_file_path, address, pw ) :
                 output = subprocess.check_output(
                         ['doveadm', 'pw', '-p', pw, '-t', hashed_passwd])
             except subprocess.CalledProcessError :
+                f.close()
                 # If the doveadm test failed
                 return False
             else :
+                f.close()
                 # If the doveadm test succeded
                 return True
     
     # Address not found in the passwd file
+    f.close()
     return False
