@@ -4,6 +4,12 @@
     {% if error %}
     <p class=error><strong>Error:</strong> {{ error }}
     {% endif %}
+    {% if error_passwd %}
+    <p class=error><strong>Error:</strong> {{ error_passwd }}
+    {% endif %}
+    {% if error_end %}
+    <p class=error><strong>Error:</strong> {{ error_end }}
+    {% endif %}
     <form method="POST">
 	<h2>You are editing {{ mailbox }}.</h2>
         <dl>
@@ -12,6 +18,14 @@
 	    <dt>Repeat the new password</dt>
 	        <dd><input name="new_password2" type="password"></dd>
 	    {% if end_date %}
+            <dt><input type="checkbox" name="end" onclick="dynDateElements(this);" checked>Set a time limit</dt>
+                <dd>
+                    <p id="inputdate">
+                        <script type="text/javascript">
+                            dynDateElements(document.getElementsByName("end")[0])
+                        </script>
+                    </p>
+                </dd>
 	    {% else %}
 	    <dt><input type="checkbox" name="end" onclick="dynDateElements(this);">Set a time limit
 	        <dd><p id="inputdate"></p>

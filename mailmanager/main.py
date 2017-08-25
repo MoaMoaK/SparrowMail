@@ -102,6 +102,11 @@ def check_dovecot_passwd( mailbox_add, pw ) :
 
     return dovecot.check_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
 
+def change_dovecot_passwd( mailbox_add, pw ) :
+    """Triggers the dovecot.change_passwd function with the right infos"""
+
+    return dovecot.change_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+
 
 
 
@@ -385,6 +390,99 @@ def edit_alias(alias_id) :
     return render_template( 'editalias.html', alias=alias['address'], end_date=alias['end_date'], error=error)
 
                  
+@app.route('/editmailbox/<int:mailbox_id>', methods=['GET', 'POST'])
+def edit_mailbox(mailbox_id) :
+    """The web page to edit a mailbox informations"""
+
+    if not session.get('user_id') :
+        return redirect( url_for('login'))
+
+    # Get some info about the mailbox asked to be edited
+    db = get_db()
+    cur = db.execute('SELECT address, target_id, end_date FROM mails WHERE id=?', [mailbox_id])
+    mailbox = cur.fetchone()
+
+    # Does the mailbox exists or is it an alias ?
+    if not mailbox or mailbox['target_id']:
+        flash( 'The alias asked to be deleted doesn\'t exists or is not a mailbox' )
+        return redirect( url_for( 'mails' ) )
+
+    # Possible errors
+    error = None
+    error_passwd = None
+    error_end = None
+
+    # Has the user filled in the form ?
+    if request.method == 'POST' :
+        # Is the old_password field not empty
+        if not request.form.get( 'old_password' ) :
+            error = "You must fill in the password field to be able to modify anything"
+
+        # Is the password OK ?
+        elif not check_dovecot_passwd ( mailbox['address'], request.form.get( 'old_password' ) ) :
+            error = 'Wrong password'
+
+         
+        else:
+            # If the user tryed to change the password
+            if request.form.get('new_password1') or request.form.get('new_password2') :
+                # If only one password field is filled :
+                if not request.form.get('new_password1') or not request.form.get('new_password2') :
+                    error_passwd = 'Both password field must be filled in order to change the password'
+                # If password are not the same
+                elif request.form.get('new_password1') != request.form.get('new_password2') :
+                    error_passwd = 'Both password don\'t match'
+                else :
+                    # Change the password, log and notify the user of success
+                    change_dovecot_passwd( mailbox['address'], request.form.get( 'new_password1') )
+                    log( 'Password for the mailbox '+mailbox['address']+' changed' )
+                    flash( 'The password for '+mailbox['address']+' has been successfully changed' )
+
+
+            # If there is an end_date or there was but not anymore
+            if request.form.get('end') or ( not request.form.get('end') and mailbox['end_date'] ) :
+                try :
+                    # Get the date limit if there is one
+                    end_date=None
+                    if request.form.get('end') :
+                        end_str = "-".join(
+                                [ request.form.get(select).zfill(2) for select in 
+                                    ['endyear', 'endmonth', 'endday',
+                                     'endhour', 'endmin', 'endsec']
+                                ]
+                            )
+                        end_date=datetime.strptime(end_str, "%Y-%m-%d-%H-%M-%S")
+                    
+                    # Update the database
+                    db.execute('UPDATE mails SET end_date=? WHERE id=?',
+                            [end_date, mailbox_id])
+                    db.commit()
+                except sqlite3.OperationalError :
+                    # Exceptions about database
+                    error_end = 'Something went wrong while updating the database'
+                    log (sys.exc_info())
+                except ValueError :
+                    # Exceptions about datetime wrong value
+                    error_end = 'Please don\'t even try to mess up with the form'
+                    log (sys.exc_info())
+                except :
+                    # Other exceptions
+                    error_end = 'Something went wrong'
+                    log (sys.exc_info())
+                    raise
+                else :
+                    # Everyting is ok and notify the user about success
+                    if request.form.get('end') :
+                        log ('Set mailbox '+mailbox['address']+' end limit to '+end_date.isoformat())
+                        flash ('End limit for '+mailbox['address']+' changed to '+end_date.isoformat())
+                    else :
+                        log ('Removed end limit for mailbox '+mailbox['address'])
+                        flash ('Removed end limit for '+mailbox['address'])
+        
+    # Reload data from database in case of a change
+    cur = db.execute('SELECT address, end_date FROM mails WHERE id=?', [mailbox_id])
+    mailbox = cur.fetchone()
+    return render_template( 'editmailbox.html', mailbox=mailbox['address'], end_date=mailbox['end_date'], error=error, error_passwd=error_passwd, error_end=error_end)
 
 
 
