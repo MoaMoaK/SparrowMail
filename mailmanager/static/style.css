@@ -75,9 +75,9 @@ footer li img { display: inline; vertical-align: middle; }
 /* FLASH
  * flash messages pop a small banner under the the header */
 @keyframes slideInAndOutFromTop {
-	0% { transform: translateY(-100%); }
-	10%, 90% { transform: translateY(0); }
-	100% { transform: translateY(-100%); }
+	0% { transform: translateY(-500%); }
+	20%, 80% { transform: translateY(0); }
+	100% { transform: translateY(-500%); }
 }
 .flash {
 	z-index: -1;
@@ -89,4 +89,4 @@ footer li img { display: inline; vertical-align: middle; }
 	margin: 0 auto; 
 	border-radius: 0px 0px 10px 10px; 
 	position: relative;
-	animation: slideInAndOutFromTop 5s linear 0s 1 forwards ; }
+	animation: slideInAndOutFromTop 7s ease 0s 1 forwards ; }
