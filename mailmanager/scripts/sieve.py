@@ -47,11 +47,11 @@ def get_filter_list( mail_dir_path, sieve_filename, exclude_dirname=[] ) :
     return res
 
 
-def get_filter_filepath_from_mailbox( mail_dir, mailbox, sieve_filename ) :
+def get_filter_filepath_from_mailbox( mail_dir_path, mailbox, sieve_filename ) :
     """Retrieve the sieve file associated with a mailbox"""
 
     # Get info from mailbox
-    user, domain = mialbox.split( '@' )
+    user, domain = mailbox.split( '@' )
     # Return the associated sieve file path
     return os.path.join( mail_dir_path, domain, user, sieve_filename )
 
