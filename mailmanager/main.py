@@ -680,9 +680,8 @@ def edit_user():
 
 
 
-
-@app.route('/login/', methods=['GET', 'POST'])
-def login():
+@app.route( '/login/<redir>', methods=['GET', 'POST'], defaults={'redir': 'welcome'} )
+def login( redir ):
     """The login page (standard username + passwd connection)"""
 
     error = None
@@ -706,9 +705,16 @@ def login():
                     session['user_id'] = user['id']
                     log('User '+request.form.get('username')+' connected')
                     flash('Successfully connected')
-                    # back to the welcome page
 
-                    return redirect(url_for('welcome'))
+                    # Try to go back to the redir page
+                    try :
+                        ret = redirect( url_for( redir ) )
+                        return ret
+                    except :
+                        flash( 'A wrong URL was given so you\'ve been redirected to the welcome page' )
+                        log( sys.exc_info() )
+                        return redirect( url_for( 'welcome' ) )
+
                 else :
                     error = 'Incorrect credentials'
         else :
