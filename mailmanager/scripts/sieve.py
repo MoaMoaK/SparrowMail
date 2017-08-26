@@ -59,11 +59,14 @@ def get_filter_filepath_from_mailbox( mail_dir_path, mailbox, sieve_filename ) :
 def get_filter_content_from_filepath( filepath ):
     """Return the data inside the sieve file given"""
 
-    f = open( filepath, 'r' )
+    try :
+        f = open( filepath, 'r' )
+        # Warning if file is bigger than memory can be dangerous
+        # max size read should be specified in f.read( size )
+        content = f.read()
+    except IOError :
+        content = ""
 
-    # Warning if file is bigger than memory can be dangerous
-    # max size read should be specified in f.read( size )
-    content = f.read()
 
     return content
 
