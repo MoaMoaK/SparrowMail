@@ -145,6 +145,9 @@ def folders():
 def filters():
     """The filter web page"""
 
+    if not session.get('user_id') :
+        return redirect( url_for( 'login' ) )
+
     filters = get_sieve_filter_list()
 
     return render_template('filters.html', filters=filters)
