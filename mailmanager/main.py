@@ -632,9 +632,33 @@ def edit_filter( mailbox ) :
         flash( 'The filter you\'ve asked for is not manage by this website' )
         return redirect( url_for( 'filters' ) )
 
+    # Possible error
+    error = None
+    error_syntax = None
+
+    # If the user entered a new content
+    if request.method == 'POST' :
+        # Get the new content
+        new_content = request.form.get('new_content')
+
+        # Is the content correctly written ?
+        check = check_sieve_filter_content( new_content )
+        if check[0] :
+            try :
+                set_sieve_filter_content( mailbox, new_content )
+            except :
+                error = 'Something went wrong while writing the new sieve file'
+            else :
+                flash( 'New sieve file sucessfully written' )
+                return redirect( url_for( 'filters' ) )
+        else :
+            error_syntax = check[1]
+        
+
+
     content = get_sieve_filter_content( mailbox )
 
-    return render_template( 'editfilter.html', mailbox=mailbox, content=content )
+    return render_template( 'editfilter.html', mailbox=mailbox, content=content, error=error, error_syntax=error_syntax )
 
 
     

@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
     {% if error %}
-        <p class=error><strong>Error:</strong>{{ error_name }}</p>
+    <p class=error><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+    {% if error_syntax %}
+    <p class=error><strong>Syntax error:</strong> {% for e in error_syntax %}{{ e }}<br>{% endfor %}</p>
     {% endif %}
 
     <form method="POST">
