@@ -9,7 +9,7 @@
 		<li class="service"><a href="{{ url_for('folders') }}">Folders</a></li>
 		<li class="service"><a href="{{ url_for('filters') }}">Filters</a></li>
 		{% if not session.user_id %}
-		<li class="metanav"><a href="{{ url_for('login') }}">log in</a></li>
+		<li class="metanav"><a href="{{ url_for('login', redir='welcome') }}">log in</a></li>
 		{% else %}
 		<li class="metanav"><a href="{{ url_for('logout') }}">log out</a></li>
 		<li class="metanav"><a href="{{ url_for('edit_user') }}">Account settings</a></li>

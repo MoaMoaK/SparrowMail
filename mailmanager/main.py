@@ -146,7 +146,7 @@ def filters():
     """The filter web page"""
 
     if not session.get('user_id') :
-        return redirect( url_for( 'login' ) )
+        return redirect( url_for( 'login', redir='filters' ) )
 
     filters = get_sieve_filter_list()
 
@@ -157,7 +157,7 @@ def mails():
     """The web page presenting the different mail infos"""
 
     if not session.get('user_id') :
-        return redirect( url_for( 'login' ) )
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Get the mailboxes and aliases from database (mails = mailboxes + aliases)
     mails = []
@@ -186,7 +186,7 @@ def add_alias(mailbox_id):
     """The page to add 1 alias to a specific mailbox"""
     
     if not session.get('user_id') :
-        return redirect(url_for('login'))
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Get the address associated with the wanted id
     db = get_db()
@@ -261,7 +261,7 @@ def add_mailbox():
     """The page to add 1 mailbox"""
     
     if not session.get('user_id') :
-        return redirect(url_for('login'))
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Possible error
     error = None
@@ -336,7 +336,7 @@ def edit_alias(alias_id) :
     """The web page to edit an alias informations"""
 
     if not session.get('user_id') :
-        return redirect( url_for('login'))
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Get some info about the alias asked to be edited
     db = get_db()
@@ -418,7 +418,7 @@ def edit_mailbox(mailbox_id) :
     """The web page to edit a mailbox informations"""
 
     if not session.get('user_id') :
-        return redirect( url_for('login'))
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Get some info about the mailbox asked to be edited
     db = get_db()
@@ -514,7 +514,7 @@ def del_mail(mail_id) :
     """The web page to delete a mail (either alias or mailbox)"""
 
     if not session.get('user_id') :
-        return redirect(url_for('login'))
+        return redirect( url_for( 'login', redir='mails' ) )
 
     # Get some info about the mail asked to be deleted
     db = get_db()
@@ -611,7 +611,7 @@ def edit_user():
 
     user_id = session.get('user_id')
     if not user_id :
-        return redirect(url_for('login'))
+        return redirect( url_for( 'login', redir='edit_user' ) )
 
     # Errors about the name or the password
     error_name = None
@@ -680,7 +680,7 @@ def edit_user():
 
 
 
-@app.route( '/login/<redir>', methods=['GET', 'POST'], defaults={'redir': 'welcome'} )
+@app.route( '/login/<redir>', methods=['GET', 'POST'])
 def login( redir ):
     """The login page (standard username + passwd connection)"""
 
@@ -728,4 +728,4 @@ def login( redir ):
 def logout():
     session.pop('user_id', None)
     flash('You were logged out')
-    return redirect(url_for('login'))
+    return redirect( url_for( 'welcome' ) )
