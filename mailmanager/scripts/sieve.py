@@ -93,7 +93,7 @@ def set_filter_from_filepath( filepath, content ) :
     # Open the file and create it if it doesn't exists
     with open( filepath, 'w+' ) as f :
         # Write the actual content
-        .write( content )
+        f.write( content )
 
 
 def set_filter_from_mailbox( mail_dir_path, mailbox, sieve_filename, content ) :

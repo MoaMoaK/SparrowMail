@@ -40,7 +40,7 @@ def check_passwd( passwd_file_path, address, pw ) :
 def change_passwd( passwd_file_path, address, pw ) :
     """Change the password associated with the given address. Don't create new entry if don't exists"""
 
-    with open( passwd_file_path, 'r') as f
+    with open( passwd_file_path, 'r') as f :
         lines = f.readlines()
 
     # Search for the line about this address
@@ -51,6 +51,6 @@ def change_passwd( passwd_file_path, address, pw ) :
             hashed_passwd = subprocess.check_output(['doveadm', 'pw', '-s', 'SSHA512', '-p', pw])
             lines[i] = address+':'+hashed_passwd+'\n'
     
-    with open( passwd_file_path, 'w') as f
+    with open( passwd_file_path, 'w') as f :
         f.writelines( lines )
 
