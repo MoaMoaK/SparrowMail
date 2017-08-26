@@ -123,7 +123,7 @@ def get_sieve_filter_content( mailbox ) :
 def set_sieve_filter_content( mailbox, content ) :
     """Triggers the sieve.set_filter_content_from_mailbox with the right infos"""
 
-    return sieve.set_filter_content_from_mailbox( app.config['VMAIL_DIR'],
+    return sieve.set_filter_from_mailbox( app.config['VMAIL_DIR'],
             mailbox, app.config['SIEVE_FILENAME'], content )
 
 
