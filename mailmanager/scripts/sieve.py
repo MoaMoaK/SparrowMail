@@ -85,7 +85,13 @@ def get_filter_content_from_mailbox( mail_dir_path, mailbox, sieve_filename ) :
 def set_filter_from_filepath( filepath, content ) :
     """Write data inside the sieve file given"""
 
-    f = open( filepath, 'w' )
+    # Check for the dir to exists
+    dir_path = os.path.dirname( filepath )
+    if not os.path.exists( dir_path ) :
+        os.makedirs( dir_path )
+
+    # Open the file and create it if it doesn't exists
+    f = open( filepath, 'w+' )
 
     # Write the actual content
     f.write( content )
