@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<p>Filters page</p>
+{% for mailbox in filters.keys() %}
+<p>{{ mailbox }}</p>
+{% endfor %}
 {% endblock %}
