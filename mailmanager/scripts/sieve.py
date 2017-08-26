@@ -62,10 +62,10 @@ def get_filter_content_from_filepath( filepath ):
     """Return the data inside the sieve file given"""
 
     try :
-        f = open( filepath, 'r' )
-        # Warning if file is bigger than memory can be dangerous
-        # max size read should be specified in f.read( size )
-        content = f.read()
+        with open( filepath, 'r' ) as f:
+            # Warning if file is bigger than memory can be dangerous
+            # max size read should be specified in f.read( size )
+            content = f.read()
     except IOError :
         content = ""
 
@@ -91,10 +91,9 @@ def set_filter_from_filepath( filepath, content ) :
         os.makedirs( dir_path )
 
     # Open the file and create it if it doesn't exists
-    f = open( filepath, 'w+' )
-
-    # Write the actual content
-    f.write( content )
+    with open( filepath, 'w+' ) as f :
+        # Write the actual content
+        .write( content )
 
 
 def set_filter_from_mailbox( mail_dir_path, mailbox, sieve_filename, content ) :
@@ -119,13 +118,9 @@ def check_filter_content( content ) :
     sievefile_path = dir_path + filename + '.sieve'
     svbinfile_path = dir_path + filename + '.svbin'
 
-    f = open( sievefile_path, 'w+' )
-
-    # Write the data in tmp file
-    f.write( content )
-
-    # Close the file
-    f.close()
+    with open( sievefile_path, 'w+' ) as f :
+        # Write the data in tmp file
+        f.write( content )
 
     # Try to compile
     try :

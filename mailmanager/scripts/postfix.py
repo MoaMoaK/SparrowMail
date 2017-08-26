@@ -19,23 +19,17 @@ def hash_file (file_path) :
         return True
 
 def update_aliases( aliases_file_path, aliases_list ) :
-    f = open( aliases_file_path, 'w' )
-    
-    for alias in aliases_list :
-        f.write( alias[0]+' '+alias[1]+'\n' )
-
-    f.close()
+    with open( aliases_file_path, 'w' ) as f :
+        for alias in aliases_list :
+            f.write( alias[0]+' '+alias[1]+'\n' )
 
     hash_file( aliases_file_path )
 
 
 def update_mailboxes( mailboxes_file_path, mailboxes_list ) :
-    f = open( mailboxes_file_path, 'w' )
-
-    for mailbox in mailboxes_list :
-        f.write( mailbox+' '+mailbox+'\n' )
-
-    f.close()
+    with open( mailboxes_file_path, 'w' ) as f :
+        for mailbox in mailboxes_list :
+            f.write( mailbox+' '+mailbox+'\n' )
 
     hash_file( mailboxes_file_path )
 
