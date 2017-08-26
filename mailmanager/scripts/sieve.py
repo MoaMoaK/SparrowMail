@@ -2,6 +2,8 @@
 
 import subprocess
 import os
+import string
+import random
 
 
 def get_filter_list( mail_dir_path, sieve_filename, exclude_dirname=[] ) :
@@ -97,6 +99,36 @@ def set_filter_from_mailbox( mail_dir_path, mailbox, sieve_filename, content ) :
     # Write the content
     set_filter_from_filepath( filepath, content )
 
+
+def check_filter_content( content ) :
+    """Write the content to a temporary file and check if it can compile it
+    If there are errors return it in second element of the returned tuple"""
+    
+    # Get a random file in /tmp
+    characters = string.ascii_letters + string.digits
+    filename = ''.join([random.choice( characters ) for n in range( 10 )])
+    dir_path = '/tmp/mailmanager/'
+    if not os.path.exists( dir_path ) :
+        os.makedirs( dir_path )
+    sievefile_path = dir_path + filename + '.sieve'
+    svbinfile_path = dir_path + filename + '.svbin'
+
+    f = open( sievefile_path, 'w+' )
+
+    # Write the data in tmp file
+    f.write( content )
+
+    # Close the file
+    f.close()
+
+    # Try to compile
+    try :
+        subprocess.check_output(['sievec', '-d', sievefile_path, svbinfile_path], stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        print e.output
+        return (False, e.output.replace( filename+':', "" ).split( '\n' )[:-2])
+    else :
+        return (True, None)
 
 
 

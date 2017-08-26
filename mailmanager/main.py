@@ -126,6 +126,11 @@ def set_sieve_filter_content( mailbox, content ) :
     return sieve.set_filter_from_mailbox( app.config['VMAIL_DIR'],
             mailbox, app.config['SIEVE_FILENAME'], content )
 
+def check_sieve_filter_content( content ):
+    """Triggers the sieve.check_filter_content with the right infos"""
+
+    return sieve.check_filter_content( content )
+
 
 
 
