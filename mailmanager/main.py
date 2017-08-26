@@ -141,17 +141,6 @@ def folders():
 
     return render_template('folders.html')
     
-@app.route('/filters/', methods=['GET'])
-def filters():
-    """The filter web page"""
-
-    if not session.get('user_id') :
-        return redirect( url_for( 'login', redir='filters' ) )
-
-    filters = get_sieve_filter_list()
-
-    return render_template('filters.html', filters=filters)
-
 @app.route('/mails/', methods=['GET'])
 def mails():
     """The web page presenting the different mail infos"""
@@ -601,6 +590,27 @@ def del_mailbox(mailbox_id) :
         flash ('Something went wrong while deleting the mailbox from the database')
     else :
         flash ('Mailbox successfully deleted')
+
+
+
+
+
+@app.route('/filters/', methods=['GET'])
+def filters():
+    """The filter web page"""
+
+    if not session.get('user_id') :
+        return redirect( url_for( 'login', redir='filters' ) )
+
+    # Get all possible mailbox
+    db = get_db()
+    cur = db.execute( 'SELECT address FROM mails WHERE target_id ISNULL' )
+    mailboxes = cur.fetchall()
+
+    return render_template('filters.html', mailboxes=mailboxes)
+
+
+
 
     
 

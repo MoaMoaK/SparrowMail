@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-{% for mailbox in filters.keys() %}
-<p>{{ mailbox }}</p>
+{% for mailbox in mailboxes %}
+<p>{{ mailbox['address'] }}&nbsp;<a href="{{ url_for( 'edit_filter', mailbox=mailbox['address'] ) }}">Edit</a></p>
 {% endfor %}
 {% endblock %}
