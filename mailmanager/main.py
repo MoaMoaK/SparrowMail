@@ -612,6 +612,26 @@ def filters():
 
 
 
+@app.route('/editfilter/<mailbox>', methods=['GET', 'POST'])
+def edit_filter( mailbox ) :
+
+    if not session.get('user_id') :
+        return redirect( url_for( 'login', redir='filters' ) )
+
+    # Check if this mailbox is in the database
+    db = get_db()
+    cur = db.execute( 'SELECT address FROM mails WHERE target_id ISNULL' )
+    mailboxes = [res['address'] for res in cur.fetchall()]
+
+    if mailbox not in mailboxes :
+        flash( 'The filter you\'ve asked for is not manage by this website' )
+        return redirect( url_for( 'filters' ) )
+
+    content = get_sieve_filter_content( mailbox )
+
+    return render_template( 'editfilter.html', mailbox=mailbox, content=content )
+
+
     
 
 
