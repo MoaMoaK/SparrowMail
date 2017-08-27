@@ -5,10 +5,9 @@
     {% endif %}
     <form method="POST">
 	<h2>You are about to delete {{ mail }}.</h2>
-        <dl>
-            <dt>Enter the associated password to confirm</dt>
-	        <dd><input name="password" type="password"></dd>
+        <ul>
+            <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" height=24><input name="password" type="password" placeholder="Enter password to confirm"></dd>
             <dt><input type="submit" value="Validate"></dt>
-        </dl>
+        </ul>
     </form>
 {% endblock %}
