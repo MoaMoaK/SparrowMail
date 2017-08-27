@@ -10,9 +10,9 @@
         <h2>Add a new mailbox</h2>
         <ul>
             <li>The mailbox (mailbox@example.com)<input name="mailbox" type="email"></li>
-	    <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" height=24><input name="password1" type="password" placeholder="Enter new password"></li>
-	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" height=24><input name="password2" type="password" placeholder="Repeat new password"></dd>
-            <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" height=16>Set a time limit
+	    <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="icon"><input name="password1" type="password" placeholder="Enter new password"></li>
+	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="icon"><input name="password2" type="password" placeholder="Repeat new password"></dd>
+            <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="icon">Set a time limit
                 <p id="inputdate"></p>
             </li>
             <li><input type="submit" value="Validate"></li>

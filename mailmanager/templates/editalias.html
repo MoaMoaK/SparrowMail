@@ -8,7 +8,7 @@
 	<h2>You are editing {{ alias }}.</h2>
         <ul>
 	    {% if end_date %}
-	    <li><input type="checkbox" name="end" onclick="dynDateElements(this);" checked><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" height=24>Set a time limit
+	    <li><input type="checkbox" name="end" onclick="dynDateElements(this);" checked><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="icon">Set a time limit
                 <p id="inputdate">
                     <script type="text/javascript">
                         dynDateElements(document.getElementsByName("end")[0])
@@ -16,11 +16,11 @@
                 </p>
             </li>
             {% else %}
-	    <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" height=24>Set a time limit
+	    <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="icon">Set a time limit
 	        <p id="inputdate"></p>
             </li>
 	    {% endif %}
-	    <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" height=24><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
+	    <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="icon"><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
             <li><input type="submit" value="Validate"></li>
         </ul>
     </form>

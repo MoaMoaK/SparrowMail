@@ -5,14 +5,14 @@
 <header>    
 	<ul>
 		<li class="title"><a href="{{ url_for('welcome') }}">MailManager</a></li>
-		<li class="service"><a href="{{ url_for('mails') }}"><img src="{{ url_for( 'static', filename='icons/mails.png' ) }}" alt="Mails" height=32></a></li>
-		<li class="service"><a href="{{ url_for('folders') }}"><img src="{{ url_for( 'static', filename='icons/folders.png' ) }}" alt="Folders" height=32></a></li>
-		<li class="service"><a href="{{ url_for('filters') }}"><img src="{{ url_for( 'static', filename='icons/filters.png' ) }}" alt="Filters" height=32></a></li>
+		<li class="service"><a href="{{ url_for('mails') }}"><img src="{{ url_for( 'static', filename='icons/mails.png' ) }}" alt="Mails" class="icon"></a></li>
+		<li class="service"><a href="{{ url_for('folders') }}"><img src="{{ url_for( 'static', filename='icons/folders.png' ) }}" alt="Folders" class="icon"></a></li>
+		<li class="service"><a href="{{ url_for('filters') }}"><img src="{{ url_for( 'static', filename='icons/filters.png' ) }}" alt="Filters" class="icon"></a></li>
 		{% if not session.user_id %}
-		<li class="metanav"><a href="{{ url_for('login', redir='welcome') }}"><img src=" {{ url_for( 'static', filename='icons/login.png' ) }}" alt="Login" height=32></a></li>
+		<li class="metanav"><a href="{{ url_for('login', redir='welcome') }}"><img src=" {{ url_for( 'static', filename='icons/login.png' ) }}" alt="Login" class="icon"></a></li>
 		{% else %}
-		<li class="metanav"><a href="{{ url_for('logout') }}"><img src=" {{ url_for( 'static', filename='icons/logout.png' ) }}" alt="Logout" height=32></a></li>
-		<li class="metanav"><a href="{{ url_for('edit_user') }}"><img src=" {{ url_for( 'static', filename='icons/settings.png' ) }}" alt="Account Settings" height=32></a></li>
+		<li class="metanav"><a href="{{ url_for('logout') }}"><img src=" {{ url_for( 'static', filename='icons/logout.png' ) }}" alt="Logout" class="icon"></a></li>
+		<li class="metanav"><a href="{{ url_for('edit_user') }}"><img src=" {{ url_for( 'static', filename='icons/settings.png' ) }}" alt="Account Settings" class="icon"></a></li>
 		{% endif %}
 	</ul>
 	{% for message in get_flashed_messages() %}
@@ -27,7 +27,7 @@
 <footer>
 	<ul>
 	<li class="powered-by">
-		Powered by <a href="http://flask.pocoo.org/"><img src="{{ url_for( 'static', filename='flask.png') }}" alt="Flask" height=32>
+		Powered by <a href="http://flask.pocoo.org/"><img src="{{ url_for( 'static', filename='flask.png') }}" alt="Flask" class="icon">
 		</a>
 	</li>
 	<li class="made-by">
@@ -35,7 +35,7 @@
 	</li>
 	<li class="git">
 		Project on <a href="https://gitlab.rez-rennes.fr/moamoak/mailmanager">
-			<img src="{{ url_for('static', filename='gitlab.png') }}" alt="Gitlab" height=32>
+			<img src="{{ url_for('static', filename='gitlab.png') }}" alt="Gitlab" class="icon">
 		</a>
 	</li>
 </footer>

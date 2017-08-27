@@ -10,9 +10,9 @@
     <form method="POST">
         <h2>Your personal informations</h2>
         <ul>
-            <li><img src="{{ url_for( 'static', filename='icons/user_b.png' ) }}" alt="" height=24><input name="username" type="text" value="{{ user.username }}" placeholder="Enter your username"></li>
-            <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" height=24><input name="password1" type="password" size="30" placeholder="Enter new password">
-            <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" height=24><input name="password2" type="password" size="30" placeholder="Repeat new password"></li>
+            <li><img src="{{ url_for( 'static', filename='icons/user_b.png' ) }}" alt="" class="icon"><input name="username" type="text" value="{{ user.username }}" placeholder="Enter your username"></li>
+            <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="icon"><input name="password1" type="password" size="30" placeholder="Enter new password">
+            <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="icon"><input name="password2" type="password" size="30" placeholder="Repeat new password"></li>
             <li><input type="submit" value="Validate"></li>
         </ul>
     </form>

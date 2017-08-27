@@ -7,20 +7,20 @@
 <ul>
     {% for m in mails %}
     <li>{{ m.address }} {% if m.end_date %}End : {{ m.end_date }} {% endif %}
-	    <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" height=24></a>
-	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" height=24></a>
+	    <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
+	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
 	<ul>
             {% for a in m.aliases %}
 	    <li>
                 {{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}
-                <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" height=24></a>
-                <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" height=24></a>
+                <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
+                <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
             </li>
             {% endfor %}
-	    <li><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" height=24></a></li>
+	    <li><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" class="icon"></a></li>
 	</ul>
 
     {% endfor %}
-    <li><a href="{{ url_for('add_mailbox') }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_mailbox.png' ) }}" alt="Add mailbox" height=24></a></li>
+    <li><a href="{{ url_for('add_mailbox') }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_mailbox.png' ) }}" alt="Add mailbox" class="icon"></a></li>
 </ul>
 {% endblock %}

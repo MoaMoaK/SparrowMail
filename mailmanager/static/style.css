@@ -46,11 +46,13 @@ header li a {
 	padding: 10px 16px 0px 16px;
 	text-decoration: none; }
 header li:not(.title) a:hover { background-color: darkgreen; }
+header img.icon { height: 32px; }
 
 /* MAIN
  * padded to let some space for header and footer */
 main { padding: 50px 20px 50px 20px; }
 main li img { vertical-align: middle; }
+main img.icon { height: 24px; }
 
 /* FOOTER
  * set at the bottom of page but don't overlap the main */
@@ -72,6 +74,7 @@ footer li.powered-by { float: left; }
 footer li.git { float:right; }
 footer li a { color: white; text-decoration: underline; }
 footer li img { display: inline; vertical-align: middle; }
+footer img.icon { height: 32px; }
 
 /* FLASH
  * flash messages pop a small banner under the the header */
