@@ -41,12 +41,13 @@ function dynDateElements(cbox) {
 
 		var div = document.createElement("div");
 		div.id = cbox.name;
-		div.appendChild(inputYear)
-		div.appendChild(inputMonth)
-		div.appendChild(inputDay)
-		div.appendChild(inputHour)
-		div.appendChild(inputMin)
-		div.appendChild(inputSec)
+		div.insertAdjacentHTML('afterBegin', 'Set a time limit&nbsp;');
+		div.appendChild(inputYear);
+		div.appendChild(inputMonth);
+		div.appendChild(inputDay);
+		div.appendChild(inputHour);
+		div.appendChild(inputMin);
+		div.appendChild(inputSec);
 
 		document.getElementById("inputdate").appendChild(div);
 	} else {

@@ -8,7 +8,7 @@
 	<h2>You are editing {{ alias }}.</h2>
         <ul>
 	    {% if end_date %}
-	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon">Set a time limit<input type="checkbox" name="end" onclick="dynDateElements(this);" checked>
+	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);" checked>
                 <p id="inputdate">
                     <script type="text/javascript">
                         dynDateElements(document.getElementsByName("end")[0])
@@ -16,7 +16,7 @@
                 </p>
             </li>
             {% else %}
-	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon">Set a time limit<input type="checkbox" name="end" onclick="dynDateElements(this);">
+	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);">
 	        <p id="inputdate"></p>
             </li>
 	    {% endif %}
