@@ -50,6 +50,7 @@ header li:not(.title) a:hover { background-color: darkgreen; }
 /* MAIN
  * padded to let some space for header and footer */
 main { padding: 50px 20px 50px 20px; }
+main li img { vertical-align: middle; }
 
 /* FOOTER
  * set at the bottom of page but don't overlap the main */
