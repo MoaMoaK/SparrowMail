@@ -12,27 +12,25 @@
     {% endif %}
     <form method="POST">
 	<h2>You are editing {{ mailbox }}.</h2>
-        <dl>
-            <dt>Enter the new password</dt>
-	        <dd><input name="new_password1" type="password"></dd>
-	    <dt>Repeat the new password</dt>
-	        <dd><input name="new_password2" type="password"></dd>
+        <ul>
+            <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" height=24><input name="new_password1" type="password" placeholder="Enter new password"></li>
+	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" height=24><input name="new_password2" type="password" placeholder="Repeat new password"></li>
 	    {% if end_date %}
-            <dt><input type="checkbox" name="end" onclick="dynDateElements(this);" checked>Set a time limit</dt>
-                <dd>
+            <li><input type="checkbox" name="end" onclick="dynDateElements(this);" checked><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" height=24>Set a time limit
+                
                     <p id="inputdate">
                         <script type="text/javascript">
                             dynDateElements(document.getElementsByName("end")[0])
                         </script>
                     </p>
-                </dd>
+                </li>
 	    {% else %}
-	    <dt><input type="checkbox" name="end" onclick="dynDateElements(this);">Set a time limit
-	        <dd><p id="inputdate"></p>
+	    <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" height=24>Set a time limit
+	        <p id="inputdate"></p>
 	    {% endif %}
-            <dt>Enter the actual password to confirm any modification</dt>
-	        <dd><input name="old_password" type="password"></dd>
-            <dt><input type="submit" value="Validate"></dt>
-        </dl>
+            <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" height=24>
+	        <input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
+            <li><input type="submit" value="Validate">
+        </ul>
     </form>
 {% endblock %}
