@@ -4,22 +4,23 @@
 	<p class=error><strong>Error:</strong> {{ error }}
 {% endif %}
 
-<dl>
+<ul>
     {% for m in mails %}
-    <dt>{{ m.address }} {% if m.end_date %}End : {{ m.end_date }} {% endif %}&nbsp;
-	<a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button">Delete</a>&nbsp;
-	<a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button">Edit</a>
-    </dt>
-        {% for a in m.aliases %}
-	<dd>{{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}&nbsp;
-	    <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">Delete</a>&nbsp;
-	    <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button">Edit</a>
-	</dd>
-        {% endfor %}
-	<dd><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button">Add alias</a>
-	</dd>
+    <li>{{ m.address }} {% if m.end_date %}End : {{ m.end_date }} {% endif %}
+	    <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" height=24></a>
+	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" height=24></a>
+	<ul>
+            {% for a in m.aliases %}
+	    <li>
+                {{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}
+                <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" height=24></a>
+                <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" height=24></a>
+            </li>
+            {% endfor %}
+	    <li><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" height=24></a></li>
+	</ul>
 
     {% endfor %}
-    <dt><a href="{{ url_for('add_mailbox') }}" class="button">Add mailbox</a></dt>
-</dl>
+    <li><a href="{{ url_for('add_mailbox') }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_mailbox.png' ) }}" alt="Add mailbox" height=24></a></li>
+</ul>
 {% endblock %}
