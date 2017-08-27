@@ -15,8 +15,8 @@
         <td class="mail_col">{{ m.address }}</td>
         <td class="limit_col">{% if m.end_date %}{{ m.end_date }}{% else %}&infin;{% endif %}</td>
         <td class="action_col">
-            <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
-    	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
+            <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
+    	    <a href="{{ url_for('del_mail', mail_id=m.id) }}"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
         </td>
     </tr>
         {% for a in m.aliases %}
@@ -24,8 +24,8 @@
             <td class="mail_col">{{ a.address }}</td>
             <td class="limit_col">{% if a.end_date %}{{ a.end_date }}{% else %}&infin;{% endif %}</td>
             <td class="action_col">
-		<a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
-		<a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
+		<a href="{{ url_for('edit_alias', alias_id=a.id) }}"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
+		<a href="{{ url_for('del_mail', mail_id=a.id) }}"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
             </td>
         </tr>
         {% endfor %}
@@ -33,7 +33,7 @@
             <td class="mail_col"></td>
             <td class="limit_col"></td>
             <td class="action_col">
-                <a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" class="icon"></a>
+                <a href="{{ url_for('add_alias', mailbox_id=m.id) }}"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" class="icon"></a>
             </td>
         </tr>
     {% endfor %}
