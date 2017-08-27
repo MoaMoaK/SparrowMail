@@ -4,23 +4,57 @@
 	<p class=error><strong>Error:</strong> {{ error }}
 {% endif %}
 
-<ul>
+<table>
+    <tr class="tablehead">
+        <th>Mail</th>
+        <th>Date limit</th>
+        <th>Actions</th>
+    </tr>
     {% for m in mails %}
-    <li>{{ m.address }} {% if m.end_date %}End : {{ m.end_date }} {% endif %}
-	    <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
-	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
-	<ul>
-            {% for a in m.aliases %}
-	    <li>
-                {{ a.address }} {% if a.end_date %}End : {{ a.end_date }} {% endif %}
-                <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon"></a>
-                <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon"></a>
-            </li>
-            {% endfor %}
-	    <li><a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" class="icon"></a></li>
-	</ul>
-
+    <tr class="mailbox">
+        <td>{{ m.address }}</td>
+        <td>{% if m.end_date %}{{ m.end_date }}{% else %}&infin;{% endif %}</td>
+        <td>
+            <a href="{{ url_for('edit_mailbox', mailbox_id=m.id) }}" class="button">
+                <img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon">
+            </a>
+    	    <a href="{{ url_for('del_mail', mail_id=m.id) }}" class="button">
+                <img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon">
+            </a>
+        </td>
+    </tr>
+        {% for a in m.aliases %}
+        <tr class="alias">
+            <td>{{ a.address }}</td>
+            <td>{% if a.end_date %}{{ a.end_date }}{% else %}&infin;{% endif %}</td>
+            <td>
+                <a href="{{ url_for('edit_alias', alias_id=a.id) }}" class="button">
+                    <img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="Edit" class="icon">
+                </a>
+                <a href="{{ url_for('del_mail', mail_id=a.id) }}" class="button">
+                    <img src="{{ url_for( 'static', filename='icons/delete.png' ) }}" alt="Delete" class="icon">
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr class="add-alias">
+            <td></td>
+            <td></td>
+            <td>
+                <a href="{{ url_for('add_alias', mailbox_id=m.id) }}" class="button">
+                    <img src="{{ url_for( 'static', filename='icons/add_alias.png' ) }}" alt="Add alias" class="icon">
+                </a>
+            </td>
+        </tr>
     {% endfor %}
-    <li><a href="{{ url_for('add_mailbox') }}" class="button"><img src="{{ url_for( 'static', filename='icons/add_mailbox.png' ) }}" alt="Add mailbox" class="icon"></a></li>
-</ul>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <a href="{{ url_for('add_mailbox') }}" class="button">
+                <img src="{{ url_for( 'static', filename='icons/add_mailbox.png' ) }}" alt="Add mailbox" class="icon">
+            </a>
+        </td>
+    </tr>
+</table>
 {% endblock %}
