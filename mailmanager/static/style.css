@@ -50,7 +50,7 @@ header img.icon { height: 32px; }
 
 /* MAIN
  * padded to let some space for header and footer */
-main { padding: 50px 20px 50px 20px; }
+main { padding: 60px 20px 50px 20px; }
 main li img { vertical-align: middle; }
 main img.icon { height: 18px; }
 main img.big-icon {
