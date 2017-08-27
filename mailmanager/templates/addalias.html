@@ -9,8 +9,8 @@
     <form method="POST">
         <h2>Add a new alias targeting {{  mailbox_address }}</h2>
         <ul>
-           <li><img src="{{ url_for( 'static', filename='icons/mail_addr.png' ) }}" alt="" class="icon"><input name="alias" type="text" placeholder="alias@example.com"></li>>
-            <li><input type="checkbox" name="end" onclick="dynDateElements(this);"><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="icon">Set a time limit</li>
+           <li><img src="{{ url_for( 'static', filename='icons/mail_addr.png' ) }}" alt="" class="big-icon"><input name="alias" type="text" placeholder="alias@example.com"></li>>
+            <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon">Set a time limit<input type="checkbox" name="end" onclick="dynDateElements(this);"></li>
             <li><p id="inputdate"></p></li>
             <li><input type="submit" value="Validate"></li>
         </ul>
