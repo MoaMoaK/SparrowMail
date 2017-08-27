@@ -59,14 +59,18 @@ main img.big-icon {
 	padding: 0px 10px 0px 0px; }
 main table {
 	border-spacing: 0px;
-	margin: 0 auto; }
-main table th.mail_col, main table td.mail_col {
+	margin: 0 auto;
+	width: 70% }
+main table *.filter_col {
+	text-align: left;
+	width: 60%; }
+main table *.mail_col {
 	text-align: left;
 	width: 40%; }
-main table th.limit_col, main table td.limit_col {
+main table *.limit_col {
 	text-align: center;
 	width: 20%; }
-main table th.action_col, main table td.action_col {
+main table *.action_col {
 	text-align: right;
 	width: 10%; }
 main table tr.mailbox {
