@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
+<ul>
 {% for mailbox in mailboxes %}
-<p>{{ mailbox['address'] }}&nbsp;<a href="{{ url_for( 'edit_filter', mailbox=mailbox['address'] ) }}">Edit</a></p>
+    <li>{{ mailbox['address'] }}<a href="{{ url_for( 'edit_filter', mailbox=mailbox['address'] ) }}"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="" height=24></a></li>
 {% endfor %}
 {% endblock %}
