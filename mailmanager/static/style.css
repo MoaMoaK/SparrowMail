@@ -100,12 +100,16 @@ footer li a { color: white; text-decoration: underline; }
 footer li img { display: inline; vertical-align: middle; }
 footer img.icon { height: 32px; }
 
-/* FLASH
- * flash messages pop a small banner under the the header */
+/**********************************************************
+ *                          FLASH                         *
+ * flash messages pop a small banner under the the header *
+ **********************************************************/
 @keyframes slideInAndOutFromTop {
-	0% { transform: translateY(-500%); }
-	20%, 80% { transform: translateY(0); }
-	100% { transform: translateY(-500%); }
+	0% { position: fixed; top: 0; }
+	0% { position: relative; top: auto; transform: translateY(-500%); }
+	20%, 80% { position: relative; top: auto; transform: translateY(0); }
+	100% { position: relative; top: auto; transform: translateY(-500%); }
+	100% { position: fixed; top: 0; }
 }
 .flash {
 	z-index: -1;
@@ -116,5 +120,6 @@ footer img.icon { height: 32px; }
 	text-align: center;
 	margin: 0 auto; 
 	border-radius: 0px 0px 10px 10px; 
-	position: relative;
+	position: fixed;
+	top: 0;
 	animation: slideInAndOutFromTop 7s ease 0s 1 forwards ; }
