@@ -22,9 +22,11 @@ h2              { font-size: 1.2em; }
 html { height: 100% }
 body { margin: 0; min-height: 100%; position: relative; }
 
-/* HEADER
- * fixed on top 
- * display inline with links on the right and the left */
+/*******************************************************
+ *                        HEADER                       *
+ * fixed on top                                        *
+ * display inline with links on the right and the left *
+ *******************************************************/
 header {
 	position: fixed;
 	top: 0;
@@ -48,18 +50,26 @@ header li a {
 header li:not(.title) a:hover { background-color: darkgreen; }
 header img.icon { height: 32px; }
 
-/* MAIN
- * padded to let some space for header and footer */
-main { padding: 60px 20px 50px 20px; }
+/**************************************************
+ *                     MAIN                       *
+ * padded to let some space for header and footer *
+ **************************************************/
+
+/* General */
+main { padding: 50px 20px 50px 20px; }
+
+/* Icons */
 main li img { vertical-align: middle; }
 main img.icon { height: 18px; }
 main img.big-icon {
 	height: 28px;
 	vertical-align: middle;
 	padding: 0px 10px 0px 0px; }
+
+/* Tables */
 main table {
 	border-spacing: 0px;
-	margin: 0 auto;
+	margin: 10px auto 0px;
 	width: 70% }
 main table *.filter_col {
 	text-align: left;
@@ -78,8 +88,30 @@ main table tr.mailbox {
 main table tr.alias td.mail_col::before {
 	content: url("/static/icons/alias_entry.png"); }
 
-/* FOOTER
- * set at the bottom of page but don't overlap the main */
+/* Login form */
+main form.login {
+	margin: 0 auto;
+	width: 50%;
+	border-style: groove;
+	border-radius: 0px 0px 25px 25px; }
+main form.login h2 {
+	text-align: center; }
+main form.login ul {
+	list-style-type: none; }
+main form.login li {
+	margin: 15px;
+	text-align: center; }
+main form.login li.validate {
+	text-align: right;
+	padding-right: 25px;
+	padding-bottom: 25px; }
+main form.login li img {
+	margin-right: 15px; }
+
+/********************************************************
+ *                       FOOTER                         *
+ * set at the bottom of page but don't overlap the main *
+ ********************************************************/
 footer {
 	font-size: small;
 	text-align: center;
