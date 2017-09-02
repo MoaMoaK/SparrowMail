@@ -96,18 +96,36 @@ main form {
 	width: 70%;
 	margin: 0 5%; }
 main form ul {
-	list-style-type: none; }
+	list-style-type: none;
+	padding: 5px 0px 0px 0px;
+	margin: 0px 0px 25px 25px;
+	border-color: forestgreen;
+	border-width: thick;
+	border-left-style: solid;
+	border-bottom-style: solid;
+	border-radius: 0px 0px 25px 25px; }
 main form li {
 	margin: 15px; }
 main form li.validate, main form li.confirm-pw {
 	text-align: right; }
-main form li.validate {
-	padding-bottom: 25px; }
+main form li:not(.validate) input {
+	width: 15em; }
 main form li img {
 	margin-right: 15px; }
 main form div#end {
 	display: inline-block;
 	margin: auto auto auto 15px; }
+main form h2 {
+	margin-bottom: 0px;
+	margin-top: 0px;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-color: forestgreen;
+	border-width: 5px;
+	border-radius: 0px 0px 0px 25px;
+	padding-left: 10px;
+	padding-bottom: 5px;
+	padding-top: 10px;}
 
 /* Login form */
 main form.login {
