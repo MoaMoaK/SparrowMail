@@ -6,7 +6,7 @@
     <form method="POST">
 	<h2>You are about to delete {{ mail }}.</h2>
         <ul>
-            <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="password" type="password" placeholder="Enter password to confirm"></dd>
+            <li class="confirm-pw"><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="password" type="password" placeholder="Enter password to confirm"></dd>
             <li class="validate"><input type="submit" value="Validate"></li>
         </ul>
     </form>

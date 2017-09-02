@@ -20,7 +20,7 @@
 	        <div id="end"></div>
             </li>
 	    {% endif %}
-	    <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
+	    <li class="confirm-pw"><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
             <li class="validate"><input type="submit" value="Validate"></li>
         </ul>
     </form>
