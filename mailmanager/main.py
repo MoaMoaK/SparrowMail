@@ -673,12 +673,13 @@ def edit_user():
         return redirect( url_for( 'login', redir='edit_user' ) )
 
     # Errors about the name or the password
+    error_confpw = None
     error_name = None
     error_pass = None
 
     # Get the actual informations stored
     db = get_db()
-    cur = db.execute('SELECT id, username FROM users WHERE id=?', [user_id])
+    cur = db.execute('SELECT id, username, password, salt FROM users WHERE id=?', [user_id])
     user = cur.fetchone()
 
     # Does the user exists or did sth went wrong ?
@@ -689,52 +690,58 @@ def edit_user():
 
     # The POST method is used (= the user has filled the form with new infos)
     if request.method == 'POST':
-        # Has the username been changed ?
-        if request.form.get('username') and request.form.get('username') != user['username']:
-            username = request.form.get('username')
-            # Trying to change the name in the database
-            try :
-                db.execute('UPDATE users SET username=? WHERE id=?',
-                        [username, user_id])
-                db.commit()
-            except :
-                error_name = 'Something went wrong while modifying your username'
-                log(sys.exc_info())
-            else:
-                log('Username changed from '+user['username']+' to '+username)
-                flash ('Your username has successfully been changed to '+username)
-
-
-        # Has the password been changed ?
-        if request.form.get('password1') or request.form.get('password2') :
-            if not request.form.get('password1') or not request.form.get('password2') :
-                # One of the two password field is empty
-                error_pass = 'Please fill in both password field'
-            elif request.form.get('password1') != request.form.get('password2') :
-                # Both password field don't match
-                error_pass = 'Password don\'t match'
-            else :
-                # Everything is allright let's get password and salt ready
-                password = request.form.get('password1')
-                salt = randint(1000000, 1000000000)
-                # Trying to actually modify the db
+        # Is the confirmation password correct :
+        if not request.form.get('old_password') :
+            error_confpw = "No password given"
+        elif not saltpassword(request.form.get('old_password'), user['salt']) == user['password'] :
+            error_confpw = "Wrong password"
+        else :
+            # Has the username been changed ?
+            if request.form.get('username') and request.form.get('username') != user['username']:
+                username = request.form.get('username')
+                # Trying to change the name in the database
                 try :
-                    db.execute('UPDATE users SET password=?, salt=? WHERE id=?',
-                            [saltpassword(password, salt), salt, user_id])
+                    db.execute('UPDATE users SET username=? WHERE id=?',
+                            [username, user_id])
                     db.commit()
                 except :
-                    error_pass = 'Something went wrong while changing your password'
+                    error_name = 'Something went wrong while modifying your username'
                     log(sys.exc_info())
+                else:
+                    log('Username changed from '+user['username']+' to '+username)
+                    flash ('Your username has successfully been changed to '+username)
+
+
+            # Has the password been changed ?
+            if request.form.get('new_password1') or request.form.get('new_password2') :
+                if not request.form.get('new_password1') or not request.form.get('new_password2') :
+                    # One of the two password field is empty
+                    error_pass = 'Please fill in both password field'
+                elif request.form.get('new_password1') != request.form.get('new_password2') :
+                    # Both password field don't match
+                    error_pass = 'Password don\'t match'
                 else :
-                    log(user['username']+'s password modified')
-                    flash('Your password has been successfully modified')
+                    # Everything is allright let's get password and salt ready
+                    password = request.form.get('new_password1')
+                    salt = randint(1000000, 1000000000)
+                    # Trying to actually modify the db
+                    try :
+                        db.execute('UPDATE users SET password=?, salt=? WHERE id=?',
+                                [saltpassword(password, salt), salt, user_id])
+                        db.commit()
+                    except :
+                        error_pass = 'Something went wrong while changing your password'
+                        log(sys.exc_info())
+                    else :
+                        log(user['username']+'s password modified')
+                        flash('Your password has been successfully modified')
 
     # In case something has changed we reload data from the db
     # So we're sure to be up to date
     user = db.execute('SELECT id, username FROM users WHERE id=?', [user_id]).fetchone()
 
     # Back to the edituser page but with error or success displayed
-    return render_template('edituser.html', user=user, error_name=error_name, error_pass=error_pass)
+    return render_template('edituser.html', user=user, error_name=error_name, error_pass=error_pass, error_confpw=error_confpw)
 
 
 
