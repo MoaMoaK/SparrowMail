@@ -638,21 +638,28 @@ def edit_filter( mailbox ) :
 
     # If the user entered a new content
     if request.method == 'POST' :
-        # Get the new content
-        new_content = request.form.get('new_content')
-
-        # Is the content correctly written ?
-        check = check_sieve_filter_content( new_content )
-        if check[0] :
-            try :
-                set_sieve_filter_content( mailbox, new_content )
-            except :
-                error = 'Something went wrong while writing the new sieve file'
-            else :
-                flash( 'New sieve file sucessfully written' )
-                return redirect( url_for( 'filters' ) )
+        # Is the given password correct ?
+        if not request.form.get('password') :
+            error = "No password given"
+        elif not check_dovecot_passwd( mailbox,
+                request.form.get('password') ) :
+            error = "Wrong password"
         else :
-            error_syntax = check[1]
+            # Get the new content
+            new_content = request.form.get('new_content')
+
+            # Is the content correctly written ?
+            check = check_sieve_filter_content( new_content )
+            if check[0] :
+                try :
+                    set_sieve_filter_content( mailbox, new_content )
+                except :
+                    error = 'Something went wrong while writing the new sieve file'
+                else :
+                    flash( 'New sieve file sucessfully written' )
+                    return redirect( url_for( 'filters' ) )
+            else :
+                error_syntax = check[1]
         
 
 
