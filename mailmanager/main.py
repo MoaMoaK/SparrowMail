@@ -91,13 +91,21 @@ def update_postfix_mails() :
     mailboxes_dict = cur.fetchall()
     mailboxes_list = [ m['address'] for m in mailboxes_dict ]
 
-    postfix.update(app.config['ALIASES_FILE_PATH'], app.config['MAILBOXES_FILE_PATH'],
-            aliases_list, mailboxes_list)
+    result = postfix.update(app.config['ALIASES_FILE_PATH'],
+            app.config['MAILBOXES_FILE_PATH'], aliases_list, mailboxes_list )
+    if not result[0] :
+        log( 'update_postfix_mails : '+result[1], 'ERROR' )
+
+    return result[0]
 
 def add_dovecot_passwd( mailbox_add, pw ) :
     """Triggers the dovecot.update_passwd function with the right infos"""
     
-    dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+    result = dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+    if not result[0] :
+        log( 'add_dovecot_passwd : '+result[1], 'ERROR' )
+
+    return result[0]
 
 def check_dovecot_passwd( mailbox_add, pw ) :
     """Triggers the dovecot.check_passwd function with the right infos"""
@@ -107,7 +115,11 @@ def check_dovecot_passwd( mailbox_add, pw ) :
 def change_dovecot_passwd( mailbox_add, pw ) :
     """Triggers the dovecot.change_passwd function with the right infos"""
 
-    return dovecot.change_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+    result = dovecot.change_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
+    if not result[0] :
+        log( 'change_dovecot_passwd : '+result[1], 'ERROR' )
+
+    return result[0]
 
 def get_sieve_filter_list( ) :
     """Trigger the sieve.get_filter_list function with the right infos"""
@@ -124,8 +136,12 @@ def get_sieve_filter_content( mailbox ) :
 def set_sieve_filter_content( mailbox, content ) :
     """Triggers the sieve.set_filter_content_from_mailbox with the right infos"""
 
-    return sieve.set_filter_from_mailbox( app.config['VMAIL_DIR'],
+    result = sieve.set_filter_from_mailbox( app.config['VMAIL_DIR'],
             mailbox, app.config['SIEVE_FILENAME'], content )
+    if not result[0] :
+        log( 'set_sieve_filter_content : '+result[1], 'ERROR' )
+
+    return result[0]
 
 def check_sieve_filter_content( content ):
     """Triggers the sieve.check_filter_content with the right infos"""
@@ -217,7 +233,10 @@ def add_alias(mailbox_id):
                 db.execute('INSERT INTO mails (address, target_id, end_date) VALUES (?, ?, ?)',
                         [new_alias, mailbox_id, end_date])
                 db.commit()
-                update_postfix_mails()
+
+                if not update_postfix_mails() :
+                    errors.append( Error( PostfixManip,
+                        'Something went wrong while updating postfix. Check the logs for more details.' ) )
 
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
@@ -299,10 +318,13 @@ def add_mailbox():
                 db.commit()
 
                 # Update the mailboxes files
-                update_postfix_mails()
-
+                if not update_postfix_mails() :
+                    errors.append( Error( PostfixManip,
+                        'Something went wrong while updating postfix. Check the logs for more details.' ) )
                 # Update the password file
-                add_dovecot_passwd(new_mailbox, request.form.get('password1'))
+                elif not add_dovecot_passwd(new_mailbox, request.form.get('password1')) :
+                    errors.append( Error( DovecotManip,
+                        'Something went wrong while setting the password. Check the logs for more details.' ) )
 
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
@@ -472,9 +494,11 @@ def edit_mailbox(mailbox_id) :
                 elif request.form.get('new_password1') != request.form.get('new_password2') :
                     errors.append( Error( WrongArg,
                         'Both password don\'t match' ) )
+                # Change the password, log and notify the user of success
+                elif not change_dovecot_passwd( mailbox['address'], request.form.get( 'new_password1') ) :
+                    errors.append( Error( DovecotManip,
+                        'Something went wrong while changing the password. Check the logs for more details' ) )
                 else :
-                    # Change the password, log and notify the user of success
-                    change_dovecot_passwd( mailbox['address'], request.form.get( 'new_password1') )
                     log( 'Password for the mailbox '+mailbox['address']+' changed' )
                     flash( 'The password for '+mailbox['address']+' has been successfully changed' )
 
@@ -574,7 +598,9 @@ def del_mail(mail_id) :
                 # You can delete the mail
                 else :
                     del_alias( mail_id )
-                    update_postfix_mails()
+                    if not update_postfix_mails() :
+                        errors.append( Error( PostfixManip,
+                            'Something went wrong while updating postfix. Check the logs for more details.' ) )
                     return redirect( url_for( 'mails' ) )
 
             # If it's a mailbox
@@ -588,7 +614,9 @@ def del_mail(mail_id) :
                 # You can delete the mail
                 else :
                     del_mailbox( mail_id )
-                    update_postfix_mails()
+                    if not update_postfix_mails() :
+                        errors.append( Error( PostfixManip,
+                            'Something went wrong while updating postfix. Check the logs for more details.' ) )
                     return redirect( url_for( 'mails' ) )
 
     # Render the HTML template with associated error if necessary
@@ -681,11 +709,9 @@ def edit_filter( mailbox_id ) :
             # Is the content correctly written ?
             check = check_sieve_filter_content( new_content )
             if check[0] :
-                try :
-                    set_sieve_filter_content( mailbox['address'], new_content )
-                except :
+                if not set_sieve_filter_content( mailbox['address'], new_content ) :
                     errors.append( Error( SieveManip,
-                        'Something went wrong while writing the new sieve file' ) )
+                        'Something went wrong while writing the new sieve file. Check the logs for more details.' ) )
                 else :
                     flash( 'New sieve file sucessfully written' )
                     return redirect( url_for( 'filters' ) )

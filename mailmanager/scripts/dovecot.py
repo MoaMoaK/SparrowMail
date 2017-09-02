@@ -10,6 +10,8 @@ def add_passwd( passwd_file_path, address, pw ) :
         hashed_passwd = subprocess.check_output(['doveadm', 'pw', '-s', 'SSHA512', '-p', pw])
         f.write(address+':'+hashed_passwd)
 
+    return reload_dovecot()
+
 
 def check_passwd( passwd_file_path, address, pw ) :
     """Check if the given password match the existing one"""
@@ -54,3 +56,15 @@ def change_passwd( passwd_file_path, address, pw ) :
     with open( passwd_file_path, 'w') as f :
         f.writelines( lines )
 
+    return reload_dovecot()
+
+def reload_dovecot() :
+    """"Start a subprocess to reload dovecot and take the new configuration into account"""
+
+    try :
+        subprocess.check_output(
+                ['systemctl', 'reload', 'dovecot'] )
+    except subprocess.CalledProcessError as e :
+        return (False, e.ouput)
+    else :
+        return (True, None)

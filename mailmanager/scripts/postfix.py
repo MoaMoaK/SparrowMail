@@ -6,24 +6,24 @@ def reload_postfix () :
     try :
         subprocess.check_output(['systemctl', 'reload', 'postfix'])
     except subprocess.CalledProcessError as e :
-        return False
+        return (False, e.output)
     else :
-        return True
+        return (True, None)
 
 def hash_file (file_path) :
     try :
         subprocess.check_output(['postmap', file_path])
     except subprocess.CalledProcessError as e :
-        return False
+        return (False, e.output)
     else :
-        return True
+        return (True, None)
 
 def update_aliases( aliases_file_path, aliases_list ) :
     with open( aliases_file_path, 'w' ) as f :
         for alias in aliases_list :
             f.write( alias[0]+' '+alias[1]+'\n' )
 
-    hash_file( aliases_file_path )
+    return hash_file( aliases_file_path )
 
 
 def update_mailboxes( mailboxes_file_path, mailboxes_list ) :
@@ -31,10 +31,17 @@ def update_mailboxes( mailboxes_file_path, mailboxes_list ) :
         for mailbox in mailboxes_list :
             f.write( mailbox+' '+mailbox+'\n' )
 
-    hash_file( mailboxes_file_path )
+    return hash_file( mailboxes_file_path )
 
 
 def update (aliases_file_path, mailboxes_file_path, aliases_list, mailboxes_list) :
-    update_aliases (aliases_file_path, aliases_list)
-    update_mailboxes (mailboxes_file_path, mailboxes_list)
-    reload_postfix()
+    
+    res = update_aliases (aliases_file_path, aliases_list)
+    if not res[0] :
+        return res
+
+    res = update_mailboxes (mailboxes_file_path, mailboxes_list)
+    if not res [0] :
+        return res
+
+    return reload_postfix()

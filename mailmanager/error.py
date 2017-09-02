@@ -7,14 +7,16 @@ class ErrorCategory :
     def getName( self ) :
         return self.name
 
-MissingArg  = ErrorCategory( 'Missing argument'        )
-WrongArg    = ErrorCategory( 'Wrong argument'          )
-DBManip     = ErrorCategory( 'Database manipulation'   )
-SieveManip  = ErrorCategory( 'Sieve file manipulation' )
-SieveSyntax = ErrorCategory( 'Sieve syntax'            )
-Hacker      = ErrorCategory( 'R U H4ck3r ?'            )
-Unknown     = ErrorCategory( ''                        )
-ConfPasswd  = ErrorCategory( 'Confirmation password'   )
+MissingArg   = ErrorCategory( 'Missing argument'          )
+WrongArg     = ErrorCategory( 'Wrong argument'            )
+DBManip      = ErrorCategory( 'Database manipulation'     )
+SieveManip   = ErrorCategory( 'Sieve file manipulation'   )
+SieveSyntax  = ErrorCategory( 'Sieve syntax'              )
+DovecotManip = ErrorCategory( 'Dovecot file manipulation' )
+PostfixManip = ErrorCategory( 'Postfix file manipulation' )
+Hacker       = ErrorCategory( 'R U H4ck3r ?'              )
+Unknown      = ErrorCategory( ''                          )
+ConfPasswd   = ErrorCategory( 'Confirmation password'     )
 
 class Error :
     def __init__( self, cat, info ) :
