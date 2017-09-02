@@ -39,8 +39,7 @@ function dynDateElements(cbox) {
 		var secOpt = []; for (i=0 ; i<61 ; i++) { secOpt.push(i.toString()); }
 		addOptions(secOpt, inputSec);
 
-		var div = document.createElement("div");
-		div.id = cbox.name;
+		var div = document.getElementById(cbox.name)
 		div.insertAdjacentHTML('afterBegin', 'Set a time limit&nbsp;');
 		div.appendChild(inputYear);
 		div.appendChild(inputMonth);
@@ -48,10 +47,11 @@ function dynDateElements(cbox) {
 		div.appendChild(inputHour);
 		div.appendChild(inputMin);
 		div.appendChild(inputSec);
-
-		document.getElementById("inputdate").appendChild(div);
 	} else {
-		document.getElementById(cbox.name).remove();
+		var div = document.getElementById(cbox.name);
+		while (div.hasChildNodes()) {
+			div.removeChild(div.lastChild);
+		}
 	}
 }
 

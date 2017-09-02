@@ -13,7 +13,7 @@
 	    <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="big-icon"><input name="password1" type="password" placeholder="Enter new password"></li>
 	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="big-icon"><input name="password2" type="password" placeholder="Repeat new password"></dd>
             <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);">
-                <p id="inputdate"></p>
+                <div id="end"></div>
             </li>
             <li><input type="submit" value="Validate"></li>
         </ul>

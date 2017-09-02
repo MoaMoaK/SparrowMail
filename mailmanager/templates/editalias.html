@@ -9,15 +9,15 @@
         <ul>
 	    {% if end_date %}
 	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);" checked>
-                <p id="inputdate">
+                <div id="end">
                     <script type="text/javascript">
                         dynDateElements(document.getElementsByName("end")[0])
                     </script>
-                </p>
+                </div>
             </li>
             {% else %}
 	    <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);">
-	        <p id="inputdate"></p>
+	        <div id="end"></div>
             </li>
 	    {% endif %}
 	    <li><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
