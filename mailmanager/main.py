@@ -556,7 +556,6 @@ def del_mail(mail_id) :
         if not request.form.get( 'password' ) :
             errors.append( Error( MissingArg,
                 'Please fill the password field' ) )
-
         else :
 
             # Does the mail have a target_id (= alias )
@@ -575,6 +574,8 @@ def del_mail(mail_id) :
                 # You can delete the mail
                 else :
                     del_alias( mail_id )
+                    update_postfix_mails()
+                    return redirect( url_for( 'mails' ) )
 
             # If it's a mailbox
             else :
@@ -587,9 +588,8 @@ def del_mail(mail_id) :
                 # You can delete the mail
                 else :
                     del_mailbox( mail_id )
-
-            update_postfix_mails()
-            return redirect( url_for( 'mails' ) )
+                    update_postfix_mails()
+                    return redirect( url_for( 'mails' ) )
 
     # Render the HTML template with associated error if necessary
     return render_template('delmail.html', mail=mail['address'], errors=errors)
