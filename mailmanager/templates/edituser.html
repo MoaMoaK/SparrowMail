@@ -9,8 +9,8 @@
         <h2>Your personal informations</h2>
         <ul>
             <li><img src="{{ url_for( 'static', filename='icons/user_b.png' ) }}" alt="" class="big-icon"><input name="username" type="text" value="{{ user.username }}" placeholder="Enter your username"></li>
-            <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="big-icon"><input name="new_password1" type="password" size="30" placeholder="Enter new password">
-            <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="big-icon"><input name="new_password2" type="password" size="30" placeholder="Repeat new password"></li>
+            <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="big-icon"><input name="new_password1" type="password" placeholder="Enter new password">
+            <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="big-icon"><input name="new_password2" type="password" placeholder="Repeat new password"></li>
 	    <li class="confirm-pw"><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="old_password" type="password" placeholder="Enter actual password to confirm"></li>
             <li class="validate"><input type="submit" value="Validate"></li>
         </ul>
