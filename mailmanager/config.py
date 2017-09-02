@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-    
+
 ###################################################################
 ## Config File for MailManager                                   ##
 ## All relative path starts from the root dir of the application ##
