@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
-    {% if error %}
-    <p class=error><strong>Error:</strong> {{ error }}
-    {% endif %}
+
+    {% for e in errors %}
+    <p class=error>{{ e.message() | safe }}
+    {% endfor %}
+
     <form method="POST">
 	<h2>You are about to delete {{ mail }}.</h2>
         <ul>

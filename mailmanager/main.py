@@ -21,6 +21,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 from mailmanager.scripts import postfix
 from mailmanager.scripts import dovecot
 from mailmanager.scripts import sieve
+from mailmanager.error import Error, WrongArg, MissingArg, DBManip, SieveManip, SieveSyntax, Hacker, Unknown, ConfPasswd
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object('mailmanager.config') # load config from the config.py file
@@ -192,14 +193,15 @@ def add_alias(mailbox_id):
         flash ('The mailbox you\'ve asked to add an alias to doesn\'t exist')
         return redirect(url_for('welcome'))
     
-    # Possible error
-    error = None
+    # Possible errors
+    errors = []
 
     # Has the user filled the form ?
     if request.method == 'POST' :
         # Is the field not empty
         if not request.form.get('alias') :
-            error = 'The alias field can\'t be empty'
+            errors.append( Error( MissingArg,
+                'The alias field can\'t be empty' ) )
         else :
             try :
                 # Get the date limit if there is one
@@ -219,23 +221,28 @@ def add_alias(mailbox_id):
 
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
-                error = request.form.get('alias')+' is not a valid email'
+                errors.append( Error( WrongArg,
+                    request.form.get('alias')+' is not a valid email' ) )
                 log (sys.exc_info())
             except sqlite3.OperationalError :
                 # Exceptions about database request
-                error = 'Something went wrong while updating the database'
+                errors.append( Error( DBManip,
+                    'Something went wrong while updating the database' ) )
                 log (sys.exc_info())
             except sqlite3.IntegrityError :
                 # Exceptions about integrity of database probably unique constraint
-                error = 'This mail address may be used, try another one'
+                errors.append( Error( WrongArg,
+                    'This mail address is already used, try another one' ) )
                 log (sys.exc_info())
             except ValueError :
                 # Exceptions about datetime wrong value
-                erro = 'Please don\'t even try to mess up with the form'
+                errors.append( Error( Hacker,
+                    'Please don\'t even try to mess up with the form' ) )
                 log (sys.exc_info())
             except :
                 # Other excpetions
-                error = 'Something went wrong'
+                errors.append( Error( Unknown,
+                    'Something went wrong' ) )
                 log (sys.exc_info())
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
@@ -245,7 +252,7 @@ def add_alias(mailbox_id):
 
     # If GET method used or
     # In case of something wrong, go back to the form with the error displayed
-    return render_template('addalias.html', error=error, mailbox_address=mailbox['address'])
+    return render_template('addalias.html', errors=errors, mailbox_address=mailbox['address'])
 
 
 
@@ -257,19 +264,22 @@ def add_mailbox():
     if not session.get('user_id') :
         return redirect( url_for( 'login', redir='mails' ) )
 
-    # Possible error
-    error = None
+    # Possible errors
+    errors = []
 
     # Has the user filled the form ?
     if request.method == 'POST' :
         # Is the mailbox field not empty
         if not request.form.get('mailbox') :
-            error = 'The mailbox field can\'t be empty'
+            errors.append( Error( MissingArg,
+                    'The mailbox field can\'t be empty' ) )
         # Are the password fields not empty
         elif not request.form.get('password1') or not request.form.get('password2'):
-            error = 'Please fill in the password field'
+            errors.append( Error( MissingArg,
+                'Please fill in the password fields' ) )
         elif request.form.get('password1') != request.form.get('password2'):
-            error = 'Password don\'t match'
+            errors.append( Error( WrongArg,
+                'Password don\'t match' ) )
         else :
             try :
                 # Get the date limit if there is one
@@ -296,23 +306,28 @@ def add_mailbox():
 
             except EmailNotValidError :
                 # Only exception from validate_email (= email not valid )
-                error = request.form.get('mailbox')+' is not a valid email'
+                errors.append( Error( WrongArg,
+                    request.form.get('mailbox')+' is not a valid email' ) )
                 log (sys.exc_info())
             except sqlite3.OperationalError :
                 # Exceptions about database
-                error = 'Something went wrong while updating the database'
+                errors.append( Error( DBManip,
+                    'Something went wrong while updating the database' ) )
                 log (sys.exc_info())
             except sqlite3.IntegrityError :
                 # Exceptions about integrity of database probably unique constraint
-                error = 'This mail address may be used, try another one'
+                errors.append( Error( WrongArg,
+                    'This mail address is already used, try another one' ) )
                 log (sys.exc_info())
             except ValueError :
                 # Exceptions about datetime wrong value
-                error = 'Please don\'t even try to mess up with the form'
+                errors.append( Error( Hacker,
+                    'Please don\'t even try to mess up with the form' ) )
                 log (sys.exc_info())
             except :
                 # Other exceptions
-                error = 'Something went wrong'
+                errors.append( Error( Unknown,
+                    'Something went wrong' ) )
                 log (sys.exc_info())
                 raise
             else :
@@ -323,7 +338,7 @@ def add_mailbox():
     
     # If GET method used or
     # In case of something wrong, go back to the form with the error displayed
-    return render_template('addmailbox.html', error=error)
+    return render_template('addmailbox.html', errors=errors)
 
 @app.route('/editalias/<int:alias_id>', methods=['GET', 'POST'])
 def edit_alias(alias_id) :
@@ -342,14 +357,15 @@ def edit_alias(alias_id) :
         flash( 'The alias asked to be deleted doesn\'t exists or is not an alias' )
         return redirect( url_for( 'mails' ) )
 
-    # Possible error
-    error = None
+    # Possible errors
+    errors = []
 
     # Has the user filled in the form ?
     if request.method == 'POST' :
         # Is the old_password field not empty
         if not request.form.get( 'old_password' ) :
-            error = "You must fill in the password field to be able to modify anything"
+            errors.append( Error( ConfPasswd,
+                "You must fill in the password field to be able to modify anything" ) )
 
         else :
             # Get info about the associated mailbox
@@ -358,12 +374,14 @@ def edit_alias(alias_id) :
 
             # Any strange error ?
             if not associated_mailbox :
-                error = 'The associated mailbox could not been retrieved, the database may be corrupted'
+                errors.append( Error( DBManip,
+                    'The associated mailbox could not been retrieved, the database may be corrupted' ) )
 
             # Is the password OK ?
             elif not check_dovecot_passwd ( associated_mailbox['address'],
                 request.form.get( 'old_password' ) ) :
-                error = 'Wrong password'
+                errors.append( Error( WrongArg,
+                    'Wrong password' ) )
 
              
             else:
@@ -381,15 +399,18 @@ def edit_alias(alias_id) :
                         db.commit()
                     except sqlite3.OperationalError :
                         # Exceptions about database
-                        error = 'Something went wrong while updating the database'
+                        errors.append( Error( DBManip,
+                            'Something went wrong while updating the database' ) )
                         log (sys.exc_info())
                     except ValueError :
                         # Exceptions about datetime wrong value
-                        error = 'Please don\'t even try to mess up with the form'
+                        errors.append( Error( Hacker,
+                            'Please don\'t even try to mess up with the form' ) )
                         log (sys.exc_info())
                     except :
                         # Other exceptions
-                        error = 'Something went wrong'
+                        errors.append( Error( Unknown,
+                            'Something went wrong' ) )
                         log (sys.exc_info())
                         raise
                     else :
@@ -404,7 +425,7 @@ def edit_alias(alias_id) :
     # Reload data from database in case of a change
     cur = db.execute('SELECT address, end_date FROM mails WHERE id=?', [alias_id])
     alias = cur.fetchone()
-    return render_template( 'editalias.html', alias=alias['address'], end_date=alias['end_date'], error=error)
+    return render_template( 'editalias.html', alias=alias['address'], end_date=alias['end_date'], errors=errors)
 
                  
 @app.route('/editmailbox/<int:mailbox_id>', methods=['GET', 'POST'])
@@ -425,19 +446,19 @@ def edit_mailbox(mailbox_id) :
         return redirect( url_for( 'mails' ) )
 
     # Possible errors
-    error = None
-    error_passwd = None
-    error_end = None
+    errors = []
 
     # Has the user filled in the form ?
     if request.method == 'POST' :
         # Is the old_password field not empty
         if not request.form.get( 'old_password' ) :
-            error = "You must fill in the password field to be able to modify anything"
+            errors.append( Error( ConfPasswd,
+                "You must fill in the password field to be able to modify anything" ) )
 
         # Is the password OK ?
         elif not check_dovecot_passwd ( mailbox['address'], request.form.get( 'old_password' ) ) :
-            error = 'Wrong password'
+            errors.append( Error( WrongArg,
+                'Wrong password' ) )
 
          
         else:
@@ -445,10 +466,12 @@ def edit_mailbox(mailbox_id) :
             if request.form.get('new_password1') or request.form.get('new_password2') :
                 # If only one password field is filled :
                 if not request.form.get('new_password1') or not request.form.get('new_password2') :
-                    error_passwd = 'Both password field must be filled in order to change the password'
+                    errors.append( Error( MissingArg,
+                        'Both password field must be filled in order to change the password' ) )
                 # If password are not the same
                 elif request.form.get('new_password1') != request.form.get('new_password2') :
-                    error_passwd = 'Both password don\'t match'
+                    errors.append( Error( WrongArg,
+                        'Both password don\'t match' ) )
                 else :
                     # Change the password, log and notify the user of success
                     change_dovecot_passwd( mailbox['address'], request.form.get( 'new_password1') )
@@ -476,15 +499,18 @@ def edit_mailbox(mailbox_id) :
                     db.commit()
                 except sqlite3.OperationalError :
                     # Exceptions about database
-                    error_end = 'Something went wrong while updating the database'
+                    errors.append( Error( DBManip,
+                        'Something went wrong while updating the database' ) )
                     log (sys.exc_info())
                 except ValueError :
                     # Exceptions about datetime wrong value
-                    error_end = 'Please don\'t even try to mess up with the form'
+                    errors.append( Error( Hacker,
+                        'Please don\'t even try to mess up with the form' ) )
                     log (sys.exc_info())
                 except :
                     # Other exceptions
-                    error_end = 'Something went wrong'
+                    errors.append( Error( Unknown,
+                        'Something went wrong' ) )
                     log (sys.exc_info())
                     raise
                 else :
@@ -499,7 +525,7 @@ def edit_mailbox(mailbox_id) :
     # Reload data from database in case of a change
     cur = db.execute('SELECT address, end_date FROM mails WHERE id=?', [mailbox_id])
     mailbox = cur.fetchone()
-    return render_template( 'editmailbox.html', mailbox=mailbox['address'], end_date=mailbox['end_date'], error=error, error_passwd=error_passwd, error_end=error_end)
+    return render_template( 'editmailbox.html', mailbox=mailbox['address'], end_date=mailbox['end_date'], errors=errors)
 
 
 
@@ -520,15 +546,16 @@ def del_mail(mail_id) :
         flash ('The mail asked to be deleted doesn\'t exists')
         return redirect( url_for( 'mails' ) )
 
-    # Possible error
-    error = None
+    # Possible errors
+    errors = []
 
     # Has the user filled in the form ?
     if request.method == 'POST' :
 
         # Is the password field not empty ?
         if not request.form.get( 'password' ) :
-            error = 'Please fill the password field'
+            errors.append( Error( MissingArg,
+                'Please fill the password field' ) )
 
         else :
 
@@ -543,7 +570,8 @@ def del_mail(mail_id) :
                 # Is the password correct ?
                 if not check_dovecot_passwd( associated_mailbox['address'],
                         request.form.get( 'password' ) ) :
-                    error = 'Wrong password'
+                    errors.append( Error( WrongArg,
+                        'Wrong password' ) )
                 # You can delete the mail
                 else :
                     del_alias( mail_id )
@@ -554,7 +582,8 @@ def del_mail(mail_id) :
                 # Is the password correct ?
                 if not check_dovecot_passwd( mail['address'],
                         request.form.get( 'password' ) ) :
-                    error = 'Wrong password'
+                    errors.append( Error( WrongArg,
+                        'Wrong password' ) )
                 # You can delete the mail
                 else :
                     del_mailbox( mail_id )
@@ -563,7 +592,7 @@ def del_mail(mail_id) :
             return redirect( url_for( 'mails' ) )
 
     # Render the HTML template with associated error if necessary
-    return render_template('delmail.html', mail=mail['address'], error=error)
+    return render_template('delmail.html', mail=mail['address'], errors=errors)
 
 
 def del_alias(alias_id) :
@@ -632,18 +661,19 @@ def edit_filter( mailbox_id ) :
         flash( 'The filter you\'ve asked for is not associated with a mailbox' )
         return redirect( url_for( 'filters' ) )
 
-    # Possible error
-    error = None
-    error_syntax = None
+    # Possible errors
+    errors = []
 
     # If the user entered a new content
     if request.method == 'POST' :
         # Is the given password correct ?
         if not request.form.get('password') :
-            error = "No password given"
+            errors.append( Error( MissingArg,
+                "No password given" ) )
         elif not check_dovecot_passwd( mailbox['address'],
                 request.form.get('password') ) :
-            error = "Wrong password"
+            errors.append( Error( WrongArg,
+                "Wrong password" ) )
         else :
             # Get the new content
             new_content = request.form.get('new_content')
@@ -654,18 +684,20 @@ def edit_filter( mailbox_id ) :
                 try :
                     set_sieve_filter_content( mailbox['address'], new_content )
                 except :
-                    error = 'Something went wrong while writing the new sieve file'
+                    errors.append( Error( SieveManip,
+                        'Something went wrong while writing the new sieve file' ) )
                 else :
                     flash( 'New sieve file sucessfully written' )
                     return redirect( url_for( 'filters' ) )
             else :
-                error_syntax = check[1]
+                errors.append( Error( SieveSyntax,
+                    check[1] ) )
         
 
 
     content = get_sieve_filter_content( mailbox['address'] )
 
-    return render_template( 'editfilter.html', mailbox=mailbox, content=content, error=error, error_syntax=error_syntax )
+    return render_template( 'editfilter.html', mailbox=mailbox, content=content, errors=errors )
 
 
     
@@ -679,10 +711,8 @@ def edit_user():
     if not user_id :
         return redirect( url_for( 'login', redir='edit_user' ) )
 
-    # Errors about the name or the password
-    error_confpw = None
-    error_name = None
-    error_pass = None
+    # Possible errors
+    errors = []
 
     # Get the actual informations stored
     db = get_db()
@@ -699,9 +729,11 @@ def edit_user():
     if request.method == 'POST':
         # Is the confirmation password correct :
         if not request.form.get('old_password') :
-            error_confpw = "No password given"
+            errors.append( Error( MissingArg,
+                "No password given" ) )
         elif not saltpassword(request.form.get('old_password'), user['salt']) == user['password'] :
-            error_confpw = "Wrong password"
+            errors.append( Error( WrongArg,
+                "Wrong password" ) )
         else :
             # Has the username been changed ?
             if request.form.get('username') and request.form.get('username') != user['username']:
@@ -712,7 +744,8 @@ def edit_user():
                             [username, user_id])
                     db.commit()
                 except :
-                    error_name = 'Something went wrong while modifying your username'
+                    errors.append( Error( DBManip,
+                        'Something went wrong while modifying your username' ) )
                     log(sys.exc_info())
                 else:
                     log('Username changed from '+user['username']+' to '+username)
@@ -723,10 +756,12 @@ def edit_user():
             if request.form.get('new_password1') or request.form.get('new_password2') :
                 if not request.form.get('new_password1') or not request.form.get('new_password2') :
                     # One of the two password field is empty
-                    error_pass = 'Please fill in both password field'
+                    errors.append( Error( MissingArg,
+                        'Please fill in both password field' ) )
                 elif request.form.get('new_password1') != request.form.get('new_password2') :
                     # Both password field don't match
-                    error_pass = 'Password don\'t match'
+                    errors.append( Error( WrongArg,
+                        'Passwords don\'t match' ) )
                 else :
                     # Everything is allright let's get password and salt ready
                     password = request.form.get('new_password1')
@@ -737,7 +772,8 @@ def edit_user():
                                 [saltpassword(password, salt), salt, user_id])
                         db.commit()
                     except :
-                        error_pass = 'Something went wrong while changing your password'
+                        errors.append( Error( DBManip,
+                            'Something went wrong while changing your password' ) )
                         log(sys.exc_info())
                     else :
                         log(user['username']+'s password modified')
@@ -748,7 +784,7 @@ def edit_user():
     user = db.execute('SELECT id, username FROM users WHERE id=?', [user_id]).fetchone()
 
     # Back to the edituser page but with error or success displayed
-    return render_template('edituser.html', user=user, error_name=error_name, error_pass=error_pass, error_confpw=error_confpw)
+    return render_template('edituser.html', user=user, errors=errors)
 
 
 
@@ -757,7 +793,8 @@ def edit_user():
 def login( redir ):
     """The login page (standard username + passwd connection)"""
 
-    error = None
+    # Possible errors
+    errors = []
 
     # Has the user used POST method (= try to login )
     if request.method == 'POST':
@@ -771,7 +808,8 @@ def login( redir ):
 
             # Does this user exists
             if not user :
-                error = 'Incorrect credentials'
+                errors.append( Error( WrongArg,
+                    'Incorrect credentials' ) )
             else :
                 # Is the given password the correct one
                 if saltpassword(request.form.get('password'), user['salt']) == user['password'] :
@@ -789,12 +827,14 @@ def login( redir ):
                         return redirect( url_for( 'welcome' ) )
 
                 else :
-                    error = 'Incorrect credentials'
+                    errors.append( Error( WrongArg,
+                        'Incorrect credentials' ) )
         else :
-            error = 'No credentials given'
+            errors.append( Error( MissingArg,
+                'No credentials given' ) )
 
     # In case of failed connection or GET method (= display page )
-    return render_template('login.html', error=error)
+    return render_template('login.html', errors=errors)
 
 
 @app.route('/logout')

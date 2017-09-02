@@ -1,14 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-    {% if error_confpw %}
-        <p class=error><strong>Error (confirmation password):</strong>{{ error_confpw }}</p>
-    {% endif %}
-    {% if error_name %}
-        <p class=error><strong>Error (username changing):</strong>{{ error_name }}</p>
-    {% endif %}
-    {% if error_pass %}
-        <p class=error><strong>Error (password changing):</strong>{{ error_pass }}</p>
-    {% endif %}
+
+    {% for e in errors %}
+    <p class=error>{{ e.message() | safe }}
+    {% endfor %}
 
     <form method="POST">
         <h2>Your personal informations</h2>
