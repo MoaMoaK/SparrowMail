@@ -4,6 +4,7 @@ import subprocess
 import os
 import string
 import random
+import dovecot
 
 
 def get_filter_list( mail_dir_path, sieve_filename, exclude_dirname=[] ) :
@@ -95,6 +96,8 @@ def set_filter_from_filepath( filepath, content ) :
         # Write the actual content
         f.write( content )
 
+    return dovecot.reload_dovecot()
+
 
 def set_filter_from_mailbox( mail_dir_path, mailbox, sieve_filename, content ) :
     """Write data inside the sieve file associated with mailbox given"""
@@ -102,7 +105,8 @@ def set_filter_from_mailbox( mail_dir_path, mailbox, sieve_filename, content ) :
     # Get the associated sieve file path
     filepath = get_filter_filepath_from_mailbox( mail_dir_path, mailbox, sieve_filename )
     # Write the content
-    set_filter_from_filepath( filepath, content )
+    return set_filter_from_filepath( filepath, content )
+
 
 
 def check_filter_content( content ) :
