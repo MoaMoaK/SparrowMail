@@ -9,7 +9,7 @@
         <h2>{{ mailbox.address }}'s Sieve filter content</h2>
         <ul>
             <li><textarea name="new_content" rows=20>{{ content }}</textarea></li>
-            <li class="confirm-pw"><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="password" type="password" placeholder="Enter actual password to confirm"></li>
+            <li class="confirm-pw"><img src="{{ url_for( 'static', filename='icons/passwd_b.png' ) }}" alt="" class="big-icon"><input name="password" type="password" placeholder="Enter actual password to confirm" class="big-width"></li>
             <li class="validate"><input type="submit" value="Validate"></li>
         </ul>
     </form>

@@ -9,9 +9,9 @@
     <form method="POST">
         <h2>Add a new mailbox</h2>
         <ul>
-            <li><img src="{{ url_for( 'static', filename='icons/mail_addr.png' ) }}" alt="" class="big-icon"><input name="mailbox" type="email" placeholder="mailbox@example.com"></li>
-	    <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="big-icon"><input name="password1" type="password" placeholder="Enter new password"></li>
-	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="big-icon"><input name="password2" type="password" placeholder="Repeat new password"></dd>
+            <li><img src="{{ url_for( 'static', filename='icons/mail_addr.png' ) }}" alt="" class="big-icon"><input name="mailbox" type="email" placeholder="mailbox@example.com" class="big-width"></li>
+	    <li><img src="{{ url_for( 'static', filename='icons/new_pw.png' ) }}" alt="" class="big-icon"><input name="password1" type="password" placeholder="Enter new password" class="big-width"></li>
+	    <li><img src="{{ url_for( 'static', filename='icons/repeat_pw.png' ) }}" alt="" class="big-icon"><input name="password2" type="password" placeholder="Repeat new password" class="big-width"></dd>
             <li><img src="{{ url_for( 'static', filename='icons/time.png' ) }}" alt="" class="big-icon"><input type="checkbox" name="end" onclick="dynDateElements(this);">
                 <div id="end"></div>
             </li>

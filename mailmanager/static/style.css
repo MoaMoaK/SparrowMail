@@ -108,7 +108,7 @@ main form li {
 	margin: 15px; }
 main form li.validate, main form li.confirm-pw {
 	text-align: right; }
-main form li:not(.validate) input {
+main form li input.big-width {
 	width: 15em; }
 main form li img {
 	margin-right: 15px; }
