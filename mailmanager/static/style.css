@@ -88,25 +88,31 @@ main table tr.mailbox {
 main table tr.alias td.mail_col::before {
 	content: url("/static/icons/alias_entry.png"); }
 
+/* Generic form */
+main form {
+	width: 70%;
+	margin: 0 5%; }
+main form ul {
+	list-style-type: none; }
+main form li {
+	margin: 15px; }
+main form li.validate, main form li.confirm-pw {
+	text-align: right; }
+main form li.validate {
+	padding-bottom: 25px; }
+main form li img {
+	margin-right: 15px; }
+main form div#end {
+	display: inline-block;
+	margin: auto auto auto 15px; }
+
 /* Login form */
 main form.login {
 	margin: 0 auto;
 	width: 50%;
 	border-style: groove;
-	border-radius: 0px 0px 25px 25px; }
-main form.login h2 {
+	border-radius: 0px 0px 25px 25px;
 	text-align: center; }
-main form.login ul {
-	list-style-type: none; }
-main form.login li {
-	margin: 15px;
-	text-align: center; }
-main form.login li.validate {
-	text-align: right;
-	padding-right: 25px;
-	padding-bottom: 25px; }
-main form.login li img {
-	margin-right: 15px; }
 
 /********************************************************
  *                       FOOTER                         *
