@@ -9,7 +9,7 @@
     <tr>
         <td class="filter_col">{{ mailbox.address }}</td>
         <td class="action_col">
-            <a href="{{ url_for( 'edit_filter', mailbox=mailbox.address ) }}" title="Edit filter for {{ mailbox.address }}"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="" class="icon"></a>
+            <a href="{{ url_for( 'edit_filter', mailbox_id=mailbox.id ) }}" title="Edit filter for {{ mailbox.address }}"><img src="{{ url_for( 'static', filename='icons/edit.png' ) }}" alt="" class="icon"></a>
 	</td>
     </tr>
     {% endfor %}

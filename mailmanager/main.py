@@ -609,7 +609,7 @@ def filters():
 
     # Get all possible mailbox
     db = get_db()
-    cur = db.execute( 'SELECT address FROM mails WHERE target_id ISNULL' )
+    cur = db.execute( 'SELECT id, address FROM mails WHERE target_id ISNULL' )
     mailboxes = cur.fetchall()
 
     return render_template('filters.html', mailboxes=mailboxes)
@@ -617,19 +617,19 @@ def filters():
 
 
 
-@app.route('/editfilter/<mailbox>', methods=['GET', 'POST'])
-def edit_filter( mailbox ) :
+@app.route('/editfilter/<int:mailbox_id>', methods=['GET', 'POST'])
+def edit_filter( mailbox_id ) :
 
     if not session.get('user_id') :
         return redirect( url_for( 'login', redir='filters' ) )
 
     # Check if this mailbox is in the database
     db = get_db()
-    cur = db.execute( 'SELECT address FROM mails WHERE target_id ISNULL' )
-    mailboxes = [res['address'] for res in cur.fetchall()]
+    cur = db.execute( 'SELECT address, target_id FROM mails WHERE id=?', [mailbox_id] )
+    mailbox = cur.fetchone()
 
-    if mailbox not in mailboxes :
-        flash( 'The filter you\'ve asked for is not manage by this website' )
+    if not mailbox :
+        flash( 'The filter you\'ve asked for is not associated with a mailbox' )
         return redirect( url_for( 'filters' ) )
 
     # Possible error
@@ -641,7 +641,7 @@ def edit_filter( mailbox ) :
         # Is the given password correct ?
         if not request.form.get('password') :
             error = "No password given"
-        elif not check_dovecot_passwd( mailbox,
+        elif not check_dovecot_passwd( mailbox['address'],
                 request.form.get('password') ) :
             error = "Wrong password"
         else :
@@ -652,7 +652,7 @@ def edit_filter( mailbox ) :
             check = check_sieve_filter_content( new_content )
             if check[0] :
                 try :
-                    set_sieve_filter_content( mailbox, new_content )
+                    set_sieve_filter_content( mailbox['address'], new_content )
                 except :
                     error = 'Something went wrong while writing the new sieve file'
                 else :
@@ -663,7 +663,7 @@ def edit_filter( mailbox ) :
         
 
 
-    content = get_sieve_filter_content( mailbox )
+    content = get_sieve_filter_content( mailbox['address'] )
 
     return render_template( 'editfilter.html', mailbox=mailbox, content=content, error=error, error_syntax=error_syntax )
 
