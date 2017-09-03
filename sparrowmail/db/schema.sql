@@ -3,7 +3,7 @@ CREATE TABLE users (
     id integer primary key autoincrement,
     username text not null unique,
     password text not null,
-    salt text net null
+    salt text not null
 );
 
 DROP TABLE IF EXISTS mails;
