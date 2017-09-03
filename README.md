@@ -40,16 +40,16 @@ As the app is meant to have a web interface, having a web server can be usefull.
 
 Create a system user for this app that can modify dovecot, postfix and sieve files.  
 For example :  
-`adduser sparrowmail --system --no-create-home`  
-`adduser sparrowmail dovecot`  
-`adduser sparrowmail postfix`  
-`adduser sparrowmail vmail`
+`sudo adduser sparrowmail --system --no-create-home`  
+`sudo adduser sparrowmail dovecot`  
+`sudo adduser sparrowmail postfix`  
+`sudo adduser sparrowmail vmail`
 
 
-Simply clone the git repository where you want it to be installed (must be installed on the mail server) :  
-`git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
+Simply clone the git repository (as the newly create user) here you want it to be installed (must be installed on the mail server) :  
+`sudo -u sparrowmail git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
 And install it using pip :  
-`pip install sparrowmail/`
+`sudo -u sparrowmail pip install sparrowmail/`
 
 ### Configuration
 
@@ -60,11 +60,11 @@ See comments and default values for signification of each parameter.
 
 Once the configuration is done, the initialisation can be proceed through :  
 `cd /<install_path>/sparrowmail/`  
-`python init_sparrowmail.py`
+`sudo -u sparrowmail python init_sparrowmail.py`
 
 ### Starting the web server
 
 Once the previous steps are successfully done, simply start the web server with :  
 `cd /<install_path>/sparrowmail/`  
-`python start_sparrowmail.py`
+`sudo -u sparrowmail python start_sparrowmail.py`
 
