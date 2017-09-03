@@ -21,7 +21,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 from sparrowmail.scripts import postfix
 from sparrowmail.scripts import dovecot
 from sparrowmail.scripts import sieve
-from sparrowmail.error import Error, WrongArg, MissingArg, DBManip, SieveManip, SieveSyntax, Hacker, Unknown, ConfPasswd
+from sparrowmail.error import Error, MissingArg, WrongArg, DBManip, SieveManip, SieveSyntax, DovecotManip, PostfixManip, Hacker, Unknown, ConfPasswd
 
 app = Flask(__name__) # create the application instance :)
 app.config.from_object('sparrowmail.config') # load config from the config.py file
