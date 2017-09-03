@@ -1,3 +1,4 @@
 graft sparrowmail/templates
 graft sparrowmail/static
-include sparrowmail/schema.sql
+graft sparrowmail/scripts
+include sparrowmail/db/schema.sql
