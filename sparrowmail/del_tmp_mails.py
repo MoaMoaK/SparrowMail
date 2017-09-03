@@ -50,6 +50,7 @@ def del_mails() :
     for m in to_del :
         try :
             db.execute( 'DELETE FROM mails WHERE id=?', [m['id']] )
+            db.execute( 'DELETE FROM mails WHERE target_id=?', [m['id']] )
             db.commit()
         except :
             log( 'Error while deleting '+m['address']+' from the database' )
