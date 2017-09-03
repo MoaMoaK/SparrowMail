@@ -1,10 +1,10 @@
 <!doctype html>
-<title>MailManager</title>
+<title>SparrowMail</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 <header>    
 	<ul>
-		<li class="title"><a href="{{ url_for('welcome') }}">MailManager</a></li>
+		<li class="title"><a href="{{ url_for('welcome') }}">SparrowMail</a></li>
 		<li class="service"><a href="{{ url_for('mails') }}"><img src="{{ url_for( 'static', filename='icons/mails.png' ) }}" alt="Mails" class="icon"></a></li>
 		<li class="service"><a href="{{ url_for('folders') }}"><img src="{{ url_for( 'static', filename='icons/folders.png' ) }}" alt="Folders" class="icon"></a></li>
 		<li class="service"><a href="{{ url_for('filters') }}"><img src="{{ url_for( 'static', filename='icons/filters.png' ) }}" alt="Filters" class="icon"></a></li>
@@ -31,10 +31,10 @@
 		</a>
 	</li>
 	<li class="made-by">
-		MailManager - <a href="https://www.maelkervella.eu">Maël Kervella</a>
+		SparrowMail - <a href="https://www.maelkervella.eu">Maël Kervella</a>
 	</li>
 	<li class="git">
-		Project on <a href="https://gitlab.rez-rennes.fr/moamoak/mailmanager">
+		Project on <a href="https://gitlab.rez-rennes.fr/moamoak/sparrowmail">
 			<img src="{{ url_for('static', filename='gitlab.png') }}" alt="Gitlab" class="icon">
 		</a>
 	</li>

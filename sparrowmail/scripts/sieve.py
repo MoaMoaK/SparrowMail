@@ -116,7 +116,7 @@ def check_filter_content( content ) :
     # Get a random file in /tmp
     characters = string.ascii_letters + string.digits
     filename = ''.join([random.choice( characters ) for n in range( 10 )])
-    dir_path = '/tmp/mailmanager/'
+    dir_path = '/tmp/sparrowmail/'
     if not os.path.exists( dir_path ) :
         os.makedirs( dir_path )
     sievefile_path = dir_path + filename + '.sieve'

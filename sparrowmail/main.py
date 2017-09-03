@@ -18,16 +18,16 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
              render_template, flash
 
 # Import custom packages
-from mailmanager.scripts import postfix
-from mailmanager.scripts import dovecot
-from mailmanager.scripts import sieve
-from mailmanager.error import Error, WrongArg, MissingArg, DBManip, SieveManip, SieveSyntax, Hacker, Unknown, ConfPasswd
+from sparrowmail.scripts import postfix
+from sparrowmail.scripts import dovecot
+from sparrowmail.scripts import sieve
+from sparrowmail.error import Error, WrongArg, MissingArg, DBManip, SieveManip, SieveSyntax, Hacker, Unknown, ConfPasswd
 
 app = Flask(__name__) # create the application instance :)
-app.config.from_object('mailmanager.config') # load config from the config.py file
+app.config.from_object('sparrowmail.config') # load config from the config.py file
 
 # Override config from an environment variable
-app.config.from_envvar('MAILMANAGER_SETTINGS', silent=True)
+app.config.from_envvar('SPARROWMAIL_SETTINGS', silent=True)
 
 def connect_db():
     """Connects to the specific database."""

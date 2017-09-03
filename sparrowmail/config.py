@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-    
 
 ###################################################################
-## Config File for MailManager                                   ##
+## Config File for SparrowMail                                   ##
 ## All relative path starts from the root dir of the application ##
 ###################################################################
 
@@ -26,8 +26,8 @@ SESSION_REFRESH_EACH_REQUEST = True
 #   Server hostname and port
 SERVER_NAME = 'mail.maelkervella.eu:5000'
 #   Website root url
-#   None if sub-domain is only used for MailManager
-#   /<path>/<to>/<root>/ if not
+#   None if sub-domain is only used for SparrowMail
+#   http{s|}://<SERVER_NAME>/<APPLICATION_ROOT> if not
 APPLICATION_ROOT = None
 
 
@@ -36,7 +36,7 @@ APPLICATION_ROOT = None
 ## Main database ##
 ###################
 #   Where the database is store
-DATABASE = 'mailmanager/db/mailmanager.db'
+DATABASE = 'sparrowmail/db/sparrowmail.db'
 
 
 

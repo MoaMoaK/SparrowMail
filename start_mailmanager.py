@@ -1,4 +1,4 @@
-from mailmanager import app
+from sparrowmail import app
 
 server_name = app.config['SERVER_NAME'].split(':')
 host = server_name[0]

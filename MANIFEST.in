@@ -1,3 +1,3 @@
-graft mailmanager/templates
-graft mailmanager/static
-include mailmanager/schema.sql
+graft sparrowmail/templates
+graft sparrowmail/static
+include sparrowmail/schema.sql
