@@ -1,6 +1,6 @@
 venv/
 *.pyc
 save_nogit/
-mailmanager/db/mailmanager.db
-mailmanager.egg-info/
+sparrowmail/db/*.db
+sparrowmail.egg-info/
 *.swp
