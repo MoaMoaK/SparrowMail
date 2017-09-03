@@ -1,11 +1,7 @@
-{% extends "layout.html" %}
-{% block body %}
+{% extends "layout_errors.html" %}
+{% block body_errors %}
     <script src="{{ url_for( 'static', filename='util.js' ) }}" type="text/javascript"></script>
 		    
-    {% for e in errors %}
-    <p class=error>{{ e.message() | safe }}
-    {% endfor %}
-    
     <form method="POST">
         <h2>Add a new alias targeting {{ mailbox_address }}</h2>
         <ul>

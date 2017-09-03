@@ -1,9 +1,5 @@
-{% extends "layout.html" %}
-{% block body %}
-
-    {% for e in errors %}
-    <p class=error>{{ e.message() | safe }}
-    {% endfor %}
+{% extends "layout_errors.html" %}
+{% block body_errors %}
 
     <form method="POST">
         <h2>Your personal informations</h2>
