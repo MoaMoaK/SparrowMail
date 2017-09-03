@@ -57,9 +57,18 @@ def init_db():
 
 @app.cli.command('initdb')
 def initdb_command():
-    """Initializes the database."""
+    """Initializes the database. Meant to be used as a flask command."""
     init_db()
     log('Initialized the database.')
+
+def initdb_python():
+    """Initialize the database. Meant to be used in python scripts."""
+    db = sqlite3.connect(app.config['DATABASE'])
+    db.row_factory = sqlite3.Row
+    with app.open_resource('db/schema.sql', mode='r') as f:
+        db.cursor().executescript(f.read())
+        db.commit()
+    db.close()
 
 
 
