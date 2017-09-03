@@ -52,6 +52,7 @@ def change_passwd( passwd_file_path, address, pw ) :
             # Hash the password and write it
             hashed_passwd = subprocess.check_output(['doveadm', 'pw', '-s', 'SSHA512', '-p', pw])
             lines[i] = address+':'+hashed_passwd+'\n'
+            break
     
     with open( passwd_file_path, 'w') as f :
         f.writelines( lines )
