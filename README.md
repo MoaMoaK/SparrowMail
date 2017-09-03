@@ -34,7 +34,9 @@ As the app is mainly written in python, a Python interpreter is mandatory. Works
 The app installation is done through pip so, this tool is needed for a simple installation. If not desired all needed packages can be installed manually but, finding the required one is the sole responsability of the user.  
 As the app is meant to have a web interface, having a web server can be usefull.
 
-## Installation
+## Mise en production
+
+### Installation
 
 The installation is meant to be quick and easy.  
 Simply clone the git repository where you want it to be installed (must be installed on the mail server) :  
@@ -42,14 +44,20 @@ Simply clone the git repository where you want it to be installed (must be insta
 And install it using pip :  
 `pip install sparrowmail/`
 
-## Configuration
+### Configuration
 
 All needed configuration is located in `/<install_path>/sparrowmail/config.py`.  
 See comments and default values for signification of each parameter.
 
-## Initialisation
+### Initialisation
 
 Once the configuration is done, the initialisation can be proceed through :  
-```cd /<isntall_path>/sparrowmail
-python init_sparrowmail.py```
+`cd /<install_path>/sparrowmail/`  
+`python init_sparrowmail.py`
+
+### Starting the web server
+
+Once the previous steps are successfully done, simply start the web server with :  
+`cd /<install_path>/sparrowmail/`  
+`python start_sparrowmail.py`
 
