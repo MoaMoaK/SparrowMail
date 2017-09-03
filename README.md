@@ -28,10 +28,16 @@ This project has been written by [Maël "MoaMoaK" Kervella](https://www.maelkerv
   * Sieve filter can be edited for each mailbox
     * Syntax verification before each sieve filter modification
 
+## Requirements
+
+As the app is mainly written in python, a Python interpreter is mandatory. Works with python2.7.  
+The app installation is done through pip so, this tool is needed for a simple installation. If not desired all needed packages can be installed manually but, finding the required one is the sole responsability of the user.  
+As the app is meant to have a web interface, having a web server can be usefull.
+
 ## Installation
 
 The installation is meant to be quick and easy.  
-Simply clone the git repository where you want it to be installed :  
+Simply clone the git repository where you want it to be installed (must be installed on the mail server) :  
 `git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
 And install it using pip :  
 `pip install sparrowmail`
