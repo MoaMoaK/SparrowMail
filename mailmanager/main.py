@@ -94,7 +94,7 @@ def update_postfix_mails() :
     result = postfix.update(app.config['ALIASES_FILE_PATH'],
             app.config['MAILBOXES_FILE_PATH'], aliases_list, mailboxes_list )
     if not result[0] :
-        log( 'update_postfix_mails : '+result[1], 'ERROR' )
+        log( 'update_postfix_mails : '+result[1], level='ERROR' )
 
     return result[0]
 
@@ -103,7 +103,7 @@ def add_dovecot_passwd( mailbox_add, pw ) :
     
     result = dovecot.add_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
     if not result[0] :
-        log( 'add_dovecot_passwd : '+result[1], 'ERROR' )
+        log( 'add_dovecot_passwd : '+result[1], level='ERROR' )
 
     return result[0]
 
@@ -117,7 +117,7 @@ def change_dovecot_passwd( mailbox_add, pw ) :
 
     result = dovecot.change_passwd(app.config['PASSWD_FILE_PATH'], mailbox_add, pw)
     if not result[0] :
-        log( 'change_dovecot_passwd : '+result[1], 'ERROR' )
+        log( 'change_dovecot_passwd : '+result[1], level='ERROR' )
 
     return result[0]
 
@@ -139,7 +139,7 @@ def set_sieve_filter_content( mailbox, content ) :
     result = sieve.set_filter_from_mailbox( app.config['VMAIL_DIR'],
             mailbox, app.config['SIEVE_FILENAME'], content )
     if not result[0] :
-        log( 'set_sieve_filter_content : '+result[1], 'ERROR' )
+        log( 'set_sieve_filter_content : '+result[1], level='ERROR' )
 
     return result[0]
 
@@ -242,27 +242,27 @@ def add_alias(mailbox_id):
                 # Only exception from validate_email (= email not valid )
                 errors.append( Error( WrongArg,
                     request.form.get('alias')+' is not a valid email' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except sqlite3.OperationalError :
                 # Exceptions about database request
                 errors.append( Error( DBManip,
                     'Something went wrong while updating the database' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except sqlite3.IntegrityError :
                 # Exceptions about integrity of database probably unique constraint
                 errors.append( Error( WrongArg,
                     'This mail address is already used, try another one' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except ValueError :
                 # Exceptions about datetime wrong value
                 errors.append( Error( Hacker,
                     'Please don\'t even try to mess up with the form' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except :
                 # Other excpetions
                 errors.append( Error( Unknown,
                     'Something went wrong' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             else :
                 # Everyting is ok, notify the user about success and go back to welcome page
                 log ('Alias '+new_alias+' added to '+mailbox['address'])
@@ -330,27 +330,27 @@ def add_mailbox():
                 # Only exception from validate_email (= email not valid )
                 errors.append( Error( WrongArg,
                     request.form.get('mailbox')+' is not a valid email' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except sqlite3.OperationalError :
                 # Exceptions about database
                 errors.append( Error( DBManip,
                     'Something went wrong while updating the database' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except sqlite3.IntegrityError :
                 # Exceptions about integrity of database probably unique constraint
                 errors.append( Error( WrongArg,
                     'This mail address is already used, try another one' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except ValueError :
                 # Exceptions about datetime wrong value
                 errors.append( Error( Hacker,
                     'Please don\'t even try to mess up with the form' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
             except :
                 # Other exceptions
                 errors.append( Error( Unknown,
                     'Something went wrong' ) )
-                log (sys.exc_info())
+                log (sys.exc_info(), level='ERROR')
                 raise
             else :
                 # Everyting is ok, notify the user about success and go back to mails page
@@ -423,17 +423,17 @@ def edit_alias(alias_id) :
                         # Exceptions about database
                         errors.append( Error( DBManip,
                             'Something went wrong while updating the database' ) )
-                        log (sys.exc_info())
+                        log (sys.exc_info(), level='ERROR')
                     except ValueError :
                         # Exceptions about datetime wrong value
                         errors.append( Error( Hacker,
                             'Please don\'t even try to mess up with the form' ) )
-                        log (sys.exc_info())
+                        log (sys.exc_info(), 'Error')
                     except :
                         # Other exceptions
                         errors.append( Error( Unknown,
                             'Something went wrong' ) )
-                        log (sys.exc_info())
+                        log (sys.exc_info(), 'Error')
                         raise
                     else :
                         # Everyting is ok and notify the user about success
@@ -525,17 +525,17 @@ def edit_mailbox(mailbox_id) :
                     # Exceptions about database
                     errors.append( Error( DBManip,
                         'Something went wrong while updating the database' ) )
-                    log (sys.exc_info())
+                    log (sys.exc_info(), 'Error')
                 except ValueError :
                     # Exceptions about datetime wrong value
                     errors.append( Error( Hacker,
                         'Please don\'t even try to mess up with the form' ) )
-                    log (sys.exc_info())
+                    log (sys.exc_info(), 'Error')
                 except :
                     # Other exceptions
                     errors.append( Error( Unknown,
                         'Something went wrong' ) )
-                    log (sys.exc_info())
+                    log (sys.exc_info(), 'Error')
                     raise
                 else :
                     # Everyting is ok and notify the user about success
@@ -586,7 +586,6 @@ def del_mail(mail_id) :
             if mail['target_id'] :
 
                 # Get info about the associated mailbox
-                log (mail['target_id'])
                 cur = db.execute( 'SELECT address FROM mails WHERE id=?', [mail['target_id']])
                 associated_mailbox = cur.fetchone()
                 
@@ -632,7 +631,7 @@ def del_alias(alias_id) :
         db.execute('DELETE FROM mails WHERE id=?', [alias_id])
         db.commit()
     except :
-        log (sys.exc_info())
+        log (sys.exc_info(), 'Error')
         flash ('Something went wrong while deleting the alias from the database')
     else :
         flash ('Alias successfully deleted')
@@ -648,7 +647,7 @@ def del_mailbox(mailbox_id) :
         db.execute('DELETE FROM mails WHERE id=?', [mailbox_id])
         db.commit()
     except :
-        log (sys.exc_info())
+        log (sys.exc_info(), 'Error')
         flash ('Something went wrong while deleting the mailbox from the database')
     else :
         flash ('Mailbox successfully deleted')
@@ -772,7 +771,7 @@ def edit_user():
                 except :
                     errors.append( Error( DBManip,
                         'Something went wrong while modifying your username' ) )
-                    log(sys.exc_info())
+                    log (sys.exc_info(), 'Error')
                 else:
                     log('Username changed from '+user['username']+' to '+username)
                     flash ('Your username has successfully been changed to '+username)
@@ -800,7 +799,7 @@ def edit_user():
                     except :
                         errors.append( Error( DBManip,
                             'Something went wrong while changing your password' ) )
-                        log(sys.exc_info())
+                        log (sys.exc_info(), 'Error')
                     else :
                         log(user['username']+'s password modified')
                         flash('Your password has been successfully modified')
@@ -849,7 +848,7 @@ def login( redir ):
                         return ret
                     except :
                         flash( 'A wrong URL was given so you\'ve been redirected to the welcome page' )
-                        log( sys.exc_info() )
+                        log (sys.exc_info(), 'Error')
                         return redirect( url_for( 'welcome' ) )
 
                 else :
@@ -865,6 +864,21 @@ def login( redir ):
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
-    flash('You were logged out')
+    # The user id
+    user_id = session.get('user_id')
+    if not user_id :
+        flash( 'You were already logged out' )
+    else :
+        db = get_db()
+        cur = db.execute( 'SELECT username FROM users WHERE id = ?', [user_id] )
+        user = cur.fetchone()
+        
+        if not user :
+            flash( 'It seems your session was linked to an unexisting account' )
+            log( 'Logout of unexisting account : '+str(user_id), level='ERROR')
+        else :
+            session.pop('user_id', None)
+            log( 'User '+user['username']+' disconnected' )
+            flash('You succesfully logged out')
+
     return redirect( url_for( 'welcome' ) )
