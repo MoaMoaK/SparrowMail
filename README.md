@@ -40,9 +40,16 @@ The installation is meant to be quick and easy.
 Simply clone the git repository where you want it to be installed (must be installed on the mail server) :  
 `git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
 And install it using pip :  
-`pip install sparrowmail`
+`pip install sparrowmail/`
 
 ## Configuration
 
-All needed configuration is located in `<install_path>/sparrowmail/config.py`.  
+All needed configuration is located in `/<install_path>/sparrowmail/config.py`.  
 See comments and default values for signification of each parameter.
+
+## Initialisation
+
+Once the configuration is done, the initialisation can be proceed through :  
+```cd /<isntall_path>/sparrowmail
+python init_sparrowmail.py```
+

@@ -4,7 +4,6 @@ setup(
     name='sparrowmail',
     version='0.1',
     packages=['sparrowmail'],
-    scripts=['init_sparrowmail.py']
 
     include_package_data=True,
 
