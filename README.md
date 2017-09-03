@@ -32,7 +32,7 @@ This project has been written by [Maël "MoaMoaK" Kervella](https://www.maelkerv
 
 As the app is mainly written in python, a Python interpreter is mandatory. Works with python2.7.  
 The app installation is done through pip so, this tool is needed for a simple installation. If not desired all needed packages can be installed manually but, finding the required one is the sole responsability of the user.  
-Also, wheel is required for some used packages install it with ; `pip install wheel`  
+Also, wheel is required for some used packages install it with : `pip install wheel`  
 As the app is meant to have a web interface, having a web server can be usefull.
 
 ## Production setup
