@@ -38,7 +38,13 @@ As the app is meant to have a web interface, having a web server can be usefull.
 
 ### Installation
 
-The installation is meant to be quick and easy.  
+Create a system user for this app that can modify dovecot, postfix and sieve files.  
+For example :  
+`adduser sparrowmail --system --no-create-home`
+`adduser sparrowmail dovecot`
+`adduser sparrowmail postfix`
+`adduser sparrowmail vmail`
+
 Simply clone the git repository where you want it to be installed (must be installed on the mail server) :  
 `git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
 And install it using pip :  
