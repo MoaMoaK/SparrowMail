@@ -40,7 +40,7 @@ As the app is meant to have a web interface, having a web server can be usefull.
 
 Create a system user for this app that can modify dovecot, postfix and sieve files.  
 For example :  
-`sudo adduser sparrowmail --system --no-create-home`  
+`sudo adduser sparrowmail --system`  
 `sudo adduser sparrowmail dovecot`  
 `sudo adduser sparrowmail postfix`  
 `sudo adduser sparrowmail vmail`
