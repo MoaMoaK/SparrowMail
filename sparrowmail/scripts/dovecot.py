@@ -59,6 +59,33 @@ def change_passwd( passwd_file_path, address, pw ) :
 
     return reload_dovecot()
 
+def remove_unexisting( passwd_file_path, mailboxes ) :
+    """Remove any address of the passwd file that is not in given list of mailboxes.
+    Usefull for removing delete mailboxes"""
+
+    with open( passwd_file_path, 'r') as f :
+        lines = f.readlines()
+
+    to_del = []
+
+    # Search fo the line about this address
+    for i in range(len(lines)) :
+        # Is it the right line ?
+        if not lines[i].split(':')[0] in mailboxes:
+            # Save the position and go to deletion of the line
+            to_del.append(i)
+
+    # If the line was found remove this line
+    for i in to_del:
+        lines[i:i+1] = []
+
+    # Write it in the file
+    with open( passwd_file_path, 'w') as f :
+        f.writelines( lines )
+
+    return reload_dovecot()
+
+
 def reload_dovecot() :
     """"Start a subprocess to reload dovecot and take the new configuration into account"""
 

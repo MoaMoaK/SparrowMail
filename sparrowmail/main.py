@@ -95,6 +95,12 @@ def update_postfix_mails() :
             app.config['MAILBOXES_FILE_PATH'], aliases_list, mailboxes_list )
     if not result[0] :
         log( 'update_postfix_mails : '+result[1], level='ERROR' )
+        return result[0]
+
+    result = dovecot.remove_unexisting( app.config['PASSWD_FILE_PATH'], mailboxes_list )
+    if not result[0] :
+        log( 'update_postfix_mails : '+result[1], level='ERROR' )
+        return result[0]
 
     return result[0]
 
