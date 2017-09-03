@@ -1,10 +1,15 @@
 from sparrowmail import app
 
-server_name = app.config['SERVER_NAME']
+server_host = app.config['SERVER_HOST']
+server_port = app.config['SERVER_PORT']
+
 if server_name :
-    split_name = server_name.split(':')
-    host = split_name[0]
-    port = int(split_name[1])
-    app.run(host=host, port=port)
+    if server_port :
+        app.run(host=server_host, port=server_port)
+    else :
+        app.run(host=server_host)
 else :
-    app.run()
+    if server_port :
+        app.run(port=server_port)
+    else :
+        app.run()

@@ -24,7 +24,8 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = False
 SESSION_REFRESH_EACH_REQUEST = True
 #   Server hostname and port
-SERVER_NAME = 'mail.maelkervella.eu:5000'
+SERVER_HOST = '127.0.0.1'
+SERVER_PORT = '10334'
 #   Website root url
 #   None if sub-domain is only used for SparrowMail
 #   http{s|}://<SERVER_NAME>/<APPLICATION_ROOT> if not
