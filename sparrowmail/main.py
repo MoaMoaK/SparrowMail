@@ -735,8 +735,6 @@ def edit_filter( mailbox_id ) :
         
 
 
-    content = get_sieve_filter_content( mailbox['address'] )
-
     return render_template( 'editfilter.html', mailbox=mailbox, content=content, errors=errors )
 
 
