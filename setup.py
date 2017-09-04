@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='sparrowmail',
-    version='0.1',
+    version='1.0',
     packages=['sparrowmail'],
 
     include_package_data=True,
