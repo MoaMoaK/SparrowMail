@@ -93,6 +93,6 @@ def reload_dovecot() :
         subprocess.check_output(
                 ['systemctl', 'reload', 'dovecot'] )
     except subprocess.CalledProcessError as e :
-        return (False, e.ouput)
+        return (False, e.output)
     else :
         return (True, None)
