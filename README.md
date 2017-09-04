@@ -53,8 +53,6 @@ This users also need to be able to reload postfix and dovecot, so add the follow
 
 Simply clone the git repository (as the newly create user) here you want it to be installed (must be installed on the mail server) :  
 `sudo -u sparrowmail git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
-And install it using pip :  
-`sudo -u sparrowmail pip install sparrowmail/`
 
 ### Configuration
 
@@ -64,6 +62,7 @@ See comments and default values for signification of each parameter.
 ### Initialisation
 
 Once the configuration is done, the initialisation can be proceed through :  
+`sudo -u sparrowmail pip install sparrowmail/`
 `cd /<install_path>/sparrowmail/`  
 `sudo -u sparrowmail python init_sparrowmail.py`
 
