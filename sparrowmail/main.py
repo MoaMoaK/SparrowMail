@@ -706,6 +706,9 @@ def edit_filter( mailbox_id ) :
     # Possible errors
     errors = []
 
+    # Get the content of the file
+    content = get_sieve_filter_content( mailbox['address'] )
+
     # If the user entered a new content
     if request.method == 'POST' :
         # Is the given password correct ?
@@ -717,13 +720,14 @@ def edit_filter( mailbox_id ) :
             errors.append( Error( WrongArg,
                 "Wrong password" ) )
         else :
-            # Get the new content
-            new_content = request.form.get('new_content')
+            # Get the new content and erase the previous one
+            # so this one is the one displayed in case of failure
+            content = request.form.get('new_content')
 
             # Is the content correctly written ?
-            check = check_sieve_filter_content( new_content )
+            check = check_sieve_filter_content( content )
             if check[0] :
-                if not set_sieve_filter_content( mailbox['address'], new_content ) :
+                if not set_sieve_filter_content( mailbox['address'], content ) :
                     errors.append( Error( SieveManip,
                         'Something went wrong while writing the new sieve file. Check the logs for more details.' ) )
                 else :
@@ -733,7 +737,6 @@ def edit_filter( mailbox_id ) :
                 errors.append( Error( SieveSyntax,
                     check[1] ) )
         
-
 
     return render_template( 'editfilter.html', mailbox=mailbox, content=content, errors=errors )
 
