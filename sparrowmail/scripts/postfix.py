@@ -4,7 +4,7 @@ import subprocess
 
 def reload_postfix () :
     try :
-        subprocess.check_output(['systemctl', 'reload', 'postfix'])
+        subprocess.check_output(['sudo', '/etc/init.d/postfix', 'reload'])
     except subprocess.CalledProcessError as e :
         return (False, e.output)
     else :

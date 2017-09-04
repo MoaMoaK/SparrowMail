@@ -91,7 +91,7 @@ def reload_dovecot() :
 
     try :
         subprocess.check_output(
-                ['systemctl', 'reload', 'dovecot'] )
+                ['sudo', '/etc/init.d/dovecot', 'reload'] )
     except subprocess.CalledProcessError as e :
         return (False, e.output)
     else :
