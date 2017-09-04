@@ -130,7 +130,7 @@ def check_filter_content( content ) :
     try :
         subprocess.check_output(['sievec', '-d', sievefile_path, svbinfile_path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        return (False, e.output.replace( filename+':', "" ).split( '\n' )[:-2])
+        return (False, '\n'.join(e.output.replace( filename+':', "" ).split( '\n' )[:-2]))
     else :
         return (True, None)
 
