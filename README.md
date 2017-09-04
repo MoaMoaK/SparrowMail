@@ -62,7 +62,7 @@ See comments and default values for signification of each parameter.
 ### Initialisation
 
 Once the configuration is done, the initialisation can be proceed through :  
-`sudo -u sparrowmail pip install sparrowmail/`
+`sudo -u sparrowmail pip install sparrowmail/`  
 `cd /<install_path>/sparrowmail/`  
 `sudo -u sparrowmail python init_sparrowmail.py`
 
