@@ -34,4 +34,4 @@ class Error :
         if catName == '' :
             return '<strong>Error :</strong> '+self.getInfo()
         else :
-            return '<strong> Error ('+self.getCategory().getName()+') :</strong> '+self.getInfo()
+            return '<strong> Error ('+self.getCategory().getName()+') :</strong> '+str(self.getInfo())

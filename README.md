@@ -37,6 +37,8 @@ As the app is meant to have a web interface, having a web server can be usefull.
 
 ## Production setup
 
+For security reasons, the adviced installation is done with a non root user dedicated to sparrowmail. That way thing are more complicated but more safer.
+
 ### Installation
 
 Create a system user for this app that can modify dovecot, postfix and sieve files.  
@@ -44,8 +46,10 @@ For example :
 `sudo adduser sparrowmail --system`  
 `sudo adduser sparrowmail dovecot`  
 `sudo adduser sparrowmail postfix`  
-`sudo adduser sparrowmail vmail`
+`sudo adduser sparrowmail vmail`  
 
+This users also need to be able to reload postfix and dovecot, so add the following to the sudo file (via `visudo` command executed as root) :  
+`sparrowmail    ALL = NOPASSWD: /etc/init.d/postfix reload, /etc/init.d/dovecot reload`  
 
 Simply clone the git repository (as the newly create user) here you want it to be installed (must be installed on the mail server) :  
 `sudo -u sparrowmail git clone https://moamoak@gitlab.rez-rennes.fr/moamoak/sparrowmail.git`  
