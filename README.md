@@ -1,7 +1,5 @@
 # SparrowMail
 
-[![build status](https://gitlab.rez-rennes.fr/moamoak/sparrowmail/badges/master/build.svg)](https://gitlab.rez-rennes.fr/moamoak/sparrowmail/commits/master)
-
 ## Introduction
 
 SparrowMail is a web app written in python using [the framework Flask](http://flask.pocoo.org).  
